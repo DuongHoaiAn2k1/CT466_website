@@ -29,7 +29,7 @@ class CategoryController extends Controller
     public function get($category_id)
     {
         try {
-            $category = Category::where('category_id', $category_id)->get();
+            $category = Category::where('category_id', $category_id)->first();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Lấy danh mục thành công',
@@ -71,9 +71,15 @@ class CategoryController extends Controller
                         'message' => 'Danh mục đã tồn tại'
                     ], 422);
                 } else {
+                    $imgPaths = [];
+                    foreach ($request->file('category_img') as $image) {
+                        $imagePath = $image->store('uploads', 'public');
+                        $imagePaths[] = $imagePath;
+                    }
+
                     $category = new Category();
                     $category->category_name = $request->category_name;
-
+                    $category->category_img = json_encode($imagePaths, JSON_UNESCAPED_SLASHES);
                     $category->save();
 
                     return response()->json([

@@ -57,13 +57,17 @@
           >
             <div class="d-flex">
               <!-- Cart -->
-              <a class="text-reset me-5" href="#">
+              <router-link
+                :to="{ name: 'cart' }"
+                class="text-reset me-5"
+                href="#"
+              >
                 <span><i class="fas fa-shopping-cart cart-design"></i></span>
                 <span
                   class="badge rounded-pill badge-notification bg-danger sub-cart-design"
-                  >1</span
+                  >{{ number }}</span
                 >
-              </a>
+              </router-link>
 
               <!-- Notification -->
               <div class="dropdown">
@@ -73,18 +77,25 @@
                   aria-expanded="false"
                 ></i>
                 <ul class="dropdown-menu">
-                  <li>
+                  <li v-show="isLogin === null">
                     <router-link :to="{ name: 'login' }" class="dropdown-item"
                       >Đăng nhập</router-link
                     >
                   </li>
-                  <li>
+                  <li v-show="isLogin === null">
                     <router-link
                       :to="{ name: 'register' }"
                       class="dropdown-item"
-                      href="#"
                       >Đăng ký</router-link
                     >
+                  </li>
+                  <li v-show="isLogin">
+                    <router-link :to="{ name: 'profile' }" class="dropdown-item"
+                      >Tài khoản</router-link
+                    >
+                  </li>
+                  <li v-show="isLogin" @click="handleLogOut">
+                    <button class="dropdown-item">Đăng xuất</button>
                   </li>
                 </ul>
               </div>
@@ -102,10 +113,18 @@
       <div class="container justify-content-center justify-content-md-between">
         <!-- Left links -->
         <ul class="navbar-nav flex-row text-center list-menu">
-          <li class="nav-item me-2 me-lg-0 d-none d-md-inline-block">
-            <a class="nav-link" href="#"
+          <li class="nav-item me-2 me-lg-0 d-none d-md-inline-block dropdown">
+            <a class="nav-link dropbtn" href="#"
               ><i class="fab fa-product-hunt"></i> Đặc sản Cà Mau</a
             >
+            <div class="dropdown-content">
+              <router-link
+                v-for="category in listCategory.value"
+                :key="category.category_id"
+                :to="{ name: 'product', params: { id: category.category_id } }"
+                >{{ category.category_name }}</router-link
+              >
+            </div>
           </li>
           <li class="nav-item me-2 me-lg-0 d-none d-md-inline-block">
             <a class="nav-link" href="#"
@@ -182,11 +201,80 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, onMounted, ref, watchEffect } from "vue";
 const isClick = ref(false);
+import { reactive } from "vue";
+import categoryService from "@/services/category.service";
+import authService from "@/services/auth.service";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+import cartService from "@/services/cart.service";
+import { useCartStore } from "@/stores/cart";
 
+const showLogoutSuccess = () => {
+  ElMessage({
+    message: "Đăng xuất thành công.",
+    type: "success",
+  });
+};
+
+const number = computed(() => cartStore.totalCart);
+const router = useRouter();
+const cartStore = useCartStore();
+const authStore = useAuthStore();
+const isLogin = computed(() => authStore.isUserLoggedIn);
+const handleLogOut = async () => {
+  try {
+    const response = await authService.logout();
+    authStore.logout();
+    showLogoutSuccess();
+    setTimeout(() => {
+      router.push({ name: "login" });
+      authStore.logout();
+    }, 500);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const listCategory = reactive({});
+const fetchListCategory = async () => {
+  try {
+    const response = await categoryService.getAll();
+    // console.log("cc: ", response);
+    listCategory.value = response.listCategory;
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+// const countCart = async () => {
+//   try {
+//     const response = await cartService.count(authStore.user_id);
+//     number.value = response.number;
+//   } catch (error) {
+//     console.log(error.response);
+//   }
+// };
+
+onMounted(() => {
+  fetchListCategory();
+  cartStore.count();
+
+  // console.log(isLogin);
+});
 const toggleNavigatorOne = () => {
   isClick.value = !isClick.value;
+};
+
+watchEffect(() => {
+  // countCart();
+  cartStore.count();
+});
+
+const handleRedirect = () => {
+  alert("CHO Hao");
 };
 </script>
 
@@ -307,4 +395,49 @@ const toggleNavigatorOne = () => {
     height: 48px;
   }
 }
+
+/* Drop-down Hover */
+dropbtn {
+  background-color: #04aa6d;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #0075b1;
+  min-width: 180px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: #fff;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
 </style>

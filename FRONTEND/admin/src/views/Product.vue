@@ -2,7 +2,7 @@
   <div id="layoutSidenav_content">
     <main>
       <div class="container-fluid px-4">
-        <h1 class="mt-4">DANH MỤC</h1>
+        <h1 class="mt-4">DANH SÁCH SẢN PHẨM</h1>
         <ol class="breadcrumb mb-4">
           <button type="button" class="btn btn-dark">
             <router-link
@@ -102,6 +102,9 @@
                 </tr>
               </tbody>
             </table>
+            <div v-show="datasearch.length === 0">
+              <p class="text-center">Không có sản phẩm nào</p>
+            </div>
           </div>
         </div>
       </div>
@@ -158,7 +161,7 @@ const fetchListCategory = async () => {
 const fetchListProduct = async () => {
   try {
     const response = await productService.getAll();
-    listProduct.value = response.data;
+    listProduct.value = response.listProduct;
     console.log(response);
   } catch (error) {
     console.log(error);

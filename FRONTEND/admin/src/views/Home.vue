@@ -52,7 +52,17 @@
                   <p>
                     <span class="text-danger">{{ categoryNameError }}</span>
                   </p>
+                  <input
+                    class="ms-5 ps-5"
+                    type="file"
+                    name="category_img"
+                    @change="handleUpload"
+                  />
+                  <p>
+                    <span class="text-danger">{{ categoryImgError }}</span>
+                  </p>
                 </div>
+
                 <div class="modal-footer">
                   <button
                     type="button"
@@ -61,7 +71,7 @@
                   >
                     Đóng
                   </button>
-                  <button type="submit" class="btn btn-primary">Thêm</button>
+                  <button type="submit" class="btn btn-dark">Thêm</button>
                 </div>
               </form>
             </div>
@@ -87,6 +97,7 @@
                 <tr>
                   <th>STT</th>
                   <th class="col">Tên danh mục</th>
+                  <th class="col">Hình ảnh</th>
                   <th class="col">Thời gian tạo</th>
                   <th class="col">Thời gian cập nhật</th>
                   <th class="col"></th>
@@ -105,6 +116,16 @@
                       v-model="category.category_name"
                       :readonly="index !== editingIndex"
                       :class="{ 'design-input': index !== editingIndex }"
+                    />
+                  </td>
+                  <td>
+                    <img
+                      :src="
+                        'http://127.0.0.1:8000/storage/' +
+                        JSON.parse(category.category_img)[0]
+                      "
+                      alt=""
+                      width="50px"
                     />
                   </td>
                   <td>{{ category.created_at }}</td>
@@ -155,6 +176,9 @@
                 </tr>
               </tbody>
             </table>
+            <div v-show="datasearch.length == 0">
+              <p class="text-center">Không có sản phẩm nào</p>
+            </div>
           </div>
         </div>
       </div>
@@ -182,6 +206,15 @@ const showSuccess = (message) => {
   });
 };
 
+const handleUpload = (event) => {
+  const imageFiles = event.target.files;
+  if (imageFiles && imageFiles.length > 0) {
+    dataCreate.category_img = Array.from(imageFiles);
+  } else {
+    dataCreate.category_img = [];
+  }
+};
+
 const showWarning = (message) => {
   ElNotification({
     title: "Warning",
@@ -191,12 +224,16 @@ const showWarning = (message) => {
 };
 const schema = Yup.object().shape({
   category_name: Yup.string().required("Tên danh mục không được để trống"),
+  category_img: Yup.array()
+    .max(1, "Chỉ được tải lên tối đa 1 hình ảnh")
+    .typeError("Ảnh danh mục không được để trống"),
 });
 const listCategory = ref([]);
 const search = ref("");
 const editingIndex = ref(null);
 const dataCreate = reactive({
   category_name: "",
+  category_img: "",
 });
 const fetchListCategory = async () => {
   try {
@@ -213,7 +250,7 @@ onMounted(() => {
 });
 
 const handleSearch = () => {
-  console.log(search.value);
+  // console.log(search.value);
   console.log("cc :", datasearch.value);
 };
 
@@ -242,13 +279,23 @@ const handleEdit = (index) => {
 
 const handleUpdate = (category) => {
   console.log(category.category_name);
-  updateCategory(category.category_id, category);
+  const loading = ElLoading.service({
+    lock: true,
+    text: "Đang xử lý...",
+    background: "rbga(0,0,0, 0.7)",
+  });
+
+  setTimeout(() => {
+    updateCategory(category.category_id, category);
+    loading.close();
+    fetchListCategory();
+  }, 2000);
 };
 const createCategory = async (data) => {
   try {
     const response = await categoryService.create(data);
     showSuccess("Thêm danh mục thành công");
-    // console.log(response);
+    console.log(response);
   } catch (error) {
     console.log(error.response);
     if (error.response.data.message === "Danh mục đã tồn tại") {
@@ -291,21 +338,36 @@ const handleDelete = (category_id) => {
   }, 2000);
 };
 const categoryNameError = ref(null);
+const categoryImgError = ref(null);
 const submitCreate = async (event) => {
   event.preventDefault();
   categoryNameError.value = null;
+  categoryImgError.value = null;
   schema
     .validate(dataCreate, { abortEarly: false })
     .then(() => {
       categoryNameError.value = null;
+      categoryImgError.value = null;
       // console.log(dataCreate);
+      console.log(dataCreate);
+
+      const formData = new FormData();
+      for (const key in dataCreate) {
+        if (key !== "category_img") {
+          formData.append(key, dataCreate[key]);
+        }
+      }
+
+      for (const img of dataCreate.category_img) {
+        formData.append("category_img[]", img);
+      }
       const loading = ElLoading.service({
         lock: true,
         text: "Đang xử lý...",
         background: "rgba(0,0,0, 0.7)",
       });
       setTimeout(() => {
-        createCategory(dataCreate);
+        createCategory(formData);
         loading.close();
         fetchListCategory();
       }, 2000);
@@ -314,6 +376,9 @@ const submitCreate = async (event) => {
       errors.inner.forEach((error) => {
         if (error.path == "category_name") {
           categoryNameError.value = error.message;
+        }
+        if (error.path == "category_img") {
+          categoryImgError.value = error.message;
         }
       });
     });

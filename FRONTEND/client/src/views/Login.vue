@@ -36,7 +36,6 @@
                 <label for="floatingPassword">Mật khẩu</label>
                 <span class="text-danger">{{ passwordErrors }}</span>
               </div>
-
               <div class="d-grid mb-2">
                 <button
                   class="btn btn-lg btn-primary btn-login fw-bold text-uppercase"
@@ -81,12 +80,15 @@
 import * as Yup from "yup";
 import { ref, reactive } from "vue";
 import { ElLoading, ElNotification } from "element-plus";
+import { useAuthStore } from "@/stores/auth";
 import userService from "@/services/user.service";
+import authService from "@/services/auth.service";
 import Cookies from "js-cookie";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { h } from "vue";
 
+const authStore = useAuthStore();
 const router = useRouter();
 const schema = Yup.object().shape({
   email: Yup.string()
@@ -127,10 +129,13 @@ const submitLogin = async (event) => {
       console.log(dataLogin);
       const login = async (dataLogin) => {
         try {
-          const response = await userService.login(dataLogin);
+          const response = await authService.login(dataLogin);
           console.log(response);
-          const token = response.token;
-          Cookies.set("token", token, { expires: 1 });
+          const access_token = response.access_token;
+          const refresh_token = response.refresh_token;
+          const user_id = response.user_id;
+          authStore.login(access_token, refresh_token, user_id);
+          // Cookies.set("token", token, { expires: 1 });
           showLoginSuccess();
           setTimeout(() => {
             router.push({ name: "home" });

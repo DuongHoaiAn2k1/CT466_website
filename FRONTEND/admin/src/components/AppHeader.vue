@@ -15,7 +15,7 @@
       class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"
     >
       <div class="input-group">
-        <input
+        <!-- <input
           class="form-control"
           type="text"
           placeholder="Nhập từ khóa để tìm kiếm..."
@@ -24,7 +24,7 @@
         />
         <button class="btn btn-primary" id="btnNavbarSearch" type="button">
           <i class="fas fa-search"></i>
-        </button>
+        </button> -->
       </div>
     </form>
     <!-- Navbar-->
@@ -43,10 +43,50 @@
           class="dropdown-menu dropdown-menu-end"
           aria-labelledby="navbarDropdown"
         >
-          <li><a class="dropdown-item" href="#!">Tài khoản</a></li>
-          <li><a class="dropdown-item" href="#!">Đăng Xuất</a></li>
+          <li>
+            <router-link
+              :to="{ name: 'profile' }"
+              class="dropdown-item"
+              href="#!"
+              >Tài khoản</router-link
+            >
+          </li>
+          <li>
+            <a class="dropdown-item" @click="handleLogout" href="#!"
+              >Đăng Xuất</a
+            >
+          </li>
         </ul>
       </li>
     </ul>
   </nav>
 </template>
+
+<script setup>
+import authService from "@/services/auth.service";
+import { useAuthStore } from "@/stores/auth";
+import { ElMessage } from "element-plus";
+import { useRouter } from "vue-router";
+const router = useRouter();
+const authStore = useAuthStore();
+const handleLogout = async () => {
+  try {
+    // const response = await authService.logout();
+    // console.log("Response after logout: ", response);
+    authStore.logout();
+    showLogoutSuccess();
+    setTimeout(() => {
+      router.push({ name: "login" });
+    }, 500);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const showLogoutSuccess = () => {
+  ElMessage({
+    message: "Đăng xuất thành công.",
+    type: "success",
+  });
+};
+</script>

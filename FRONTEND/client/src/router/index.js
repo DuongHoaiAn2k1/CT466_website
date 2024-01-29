@@ -23,6 +23,31 @@ const routes = [
     name: "login",
     component: () => import("@/views/Login.vue"),
   },
+  {
+    path: "/product/detail/:id",
+    name: "product-detail",
+    component: () => import("@/views/ProductDetail.vue"),
+  },
+  {
+    path: "/product/:id",
+    name: "product",
+    component: () => import("@/views/Product.vue"),
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: () => import("@/views/Profile.vue"),
+  },
+  {
+    path: "/cart",
+    name: "cart",
+    component: () => import("@/views/Cart.vue"),
+  },
+  {
+    path: "/tokenProcess",
+    name: "token",
+    component: () => import("@/components/ProcessToken.vue"),
+  },
 ];
 
 const router = createRouter({

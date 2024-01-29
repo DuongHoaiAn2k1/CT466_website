@@ -4,9 +4,7 @@ class UserService {
   constructor(baseUrl = "/api/user") {
     this.api = createApiClient(baseUrl);
   }
-  async get(id) {
-    return (await this.api.get(`/${id}`)).data;
-  }
+
   async getAll() {
     return (await this.api.get("/")).data;
   }

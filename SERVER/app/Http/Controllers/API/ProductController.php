@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -17,7 +18,7 @@ class ProductController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => ' Lấy danh sách sản phẩm thành công',
-                'data' => $listProduct
+                'listProduct' => $listProduct
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -35,6 +36,49 @@ class ProductController extends Controller
                 'status' => 'succsess',
                 'message' => 'Lấy sản phẩm thành công',
                 'data' => $product
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getProductByCategoryName(Request $request)
+    {
+        // return response()->json([
+        //     "data" => $request->category_name
+        // ], 200);
+        try {
+            $category_name = $request->category_name;
+            $category = Category::where('category_name', $category_name)->first();
+            $products = $category->products;
+            return response()->json([
+                'status' => 'succsess',
+                'message' => 'Lấy sản phẩm thành công',
+                'data' => $products
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getProductByCategoryId($category_id)
+    {
+        // return response()->json([
+        //     "data" => $request->category_name
+        // ], 200);
+        try {
+            $category = Category::find($category_id);
+            $products = $category->products;
+            return response()->json([
+                'status' => 'succsess',
+                'message' => 'Lấy sản phẩm thành công',
+                'data' => $products
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -251,6 +295,23 @@ class ProductController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Xóa sản phẩm thành công'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getPrice($product_id)
+    {
+        try {
+            $product = Product::where('product_id', $product_id)->first();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Lấy giá tiền thành công',
+                'price' => $product['product_price']
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
