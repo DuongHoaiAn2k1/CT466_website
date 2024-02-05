@@ -42,6 +42,8 @@ Route::prefix('user')->group(function () {
     });
     Route::get('/{id}', [UserController::class, 'index'])->middleware(JWTMiddlewate::class);
     Route::post('/register', [UserController::class, 'register']);
+    Route::patch('/address', [UserController::class, 'createAddress']);
+    Route::delete('/address/{index}', [UserController::class, 'deleteAddress']);
     // Route::post('/login', [UserController::class, 'login']);
     // Route::post('/logout', 'App\Http\Controllers\UserController@logout');
 });
@@ -72,7 +74,7 @@ Route::prefix('/product')->group(function () {
 Route::prefix('/cart')->group(function () {
     Route::get('/', [CartController::class, 'index']);
     Route::get('/{id}', [CartController::class, 'getByUserId']);
-    Route::get('/count/{id}', [CartController::class, 'count']);
+    Route::get('/user/count', [CartController::class, 'count']);
     Route::post('/', [CartController::class, 'create']);
     Route::patch('/decrease/{id}', [CartController::class, 'decrease']);
     Route::patch('/increase/{id}', [CartController::class, 'increase']);

@@ -41,7 +41,7 @@ class CartController extends Controller
                 $cart = new Cart();
                 $cart->user_id = $request->user_id;
                 $cart->product_id = $request->product_id;
-                $cart->quantity = 1;
+                $cart->quantity = $request->quantity;
                 $cart->save();
             } else {
                 if ($existsCart['quantity'] < 10) {
@@ -139,9 +139,10 @@ class CartController extends Controller
         }
     }
 
-    public function count($user_id)
+    public function count()
     {
         try {
+            $user_id = auth()->user()->id;
             $number = Cart::where('user_id', $user_id)->count();
             return response()->json([
                 'status' => 'success',

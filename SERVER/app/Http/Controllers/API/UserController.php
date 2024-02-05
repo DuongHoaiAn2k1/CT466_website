@@ -174,6 +174,90 @@ class UserController extends Controller
         }
     }
 
+    public function createAddress(Request $request)
+    {
+        try {
+            $customerMessages = [
+                'name.required' => 'Tên người nhận không được để trống.',
+                'phone.required' => 'Số điện thoại không được để trống.',
+                'city.required' => 'Thành phố không được để trống.',
+                'district.required' => 'Quận huyện không được để trống.',
+                'commue.required' => 'Phường xã không được để trống.',
+                'address.required' => 'Địa chỉ cụ thể không được để trống'
+            ];
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+                'phone' => 'required',
+                'city' => 'required',
+                'name' => 'required',
+                'district' => 'required',
+                'address' => 'required',
+            ], $customerMessages);
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed',
+                    'errors' => $errors
+                ], 422);
+            }
+
+            $data = $request->all();
+            $userId = auth()->user()->id;
+            $user = User::find($userId);
+            $userAddresses = json_decode($user->address, true) ?? [];
+
+            $userAddresses[] = $data;
+
+            $user->update([
+                'address' => json_encode($userAddresses)
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Thêm địa chỉ thành công'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteAddress(Request $request, $index)
+    {
+        try {
+            $userId = auth()->user()->id;
+            $user = User::find($userId);
+            $userAddresses = json_decode($user->address, true) ?? [];
+
+            if ($index < 0 || $index >= count($userAddresses)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid index provided'
+                ], 422);
+            }
+
+            array_splice($userAddresses, $index, 1);
+
+            $user->update([
+                'address' => json_encode($userAddresses)
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Đã xóa địa chỉ thành công'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
 
 
 
