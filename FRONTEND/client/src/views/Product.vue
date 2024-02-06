@@ -37,7 +37,7 @@
             </h5>
 
             <div class="d-grid gap-2">
-              <a href="#" class="btn btn-warning bold-btn">Mua</a>
+              <a href="#" class="btn btn-warning bold-btn">Thêm</a>
             </div>
             <div class="clearfix mt-1">
               <span class="float-end">

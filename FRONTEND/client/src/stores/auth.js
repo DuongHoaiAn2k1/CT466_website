@@ -2,7 +2,9 @@ import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore("userLogin", {
   state: () => ({
-    isUserLoggedIn: localStorage.getItem("isUserLoggedIn") || null,
+    isUserLoggedIn: JSON.parse(
+      localStorage.getItem("isUserLoggedIn") || "false"
+    ),
     accessTokenUser: localStorage.getItem("accessTokenUser") || null,
     refreshTokenUser: localStorage.getItem("refreshTokenUser") || null,
     user_id: localStorage.getItem("user_id"),
@@ -25,9 +27,9 @@ export const useAuthStore = defineStore("userLogin", {
       this.accessTokenUser = null;
       this.refreshTokenUser = null;
       this.user_id = null;
-      localStorage.setItem("isUserLoggedIn", false);
+      localStorage.setItem("isUserLoggedIn", "");
       localStorage.removeItem("accessTokenUser");
-      localStorage.removeItem("refreshTokenUser");
+      // localStorage.removeItem("refreshTokenUser");
       localStorage.removeItem("user_id");
     },
   },

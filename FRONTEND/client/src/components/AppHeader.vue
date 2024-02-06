@@ -11,30 +11,6 @@
             <router-link :to="{ name: 'home' }" class="ms-md-2">
               <img class="logo" src="../assets/logo.jpg" />
             </router-link>
-
-            <div class="after-logo">
-              <a class="text-reset me-5" href="#">
-                <span><i class="fas fa-shopping-cart cart-design"></i></span>
-                <span
-                  class="badge rounded-pill badge-notification bg-danger sub-cart-design"
-                  >1</span
-                >
-              </a>
-              <div class="dropdown">
-                <i
-                  class="fas fa-user dropdown-toggle user-design"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                ></i>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
 
           <div class="col-md-4 contain-form">
@@ -77,12 +53,12 @@
                   aria-expanded="false"
                 ></i>
                 <ul class="dropdown-menu">
-                  <li v-show="isLogin === null">
+                  <li v-show="!isLogin">
                     <router-link :to="{ name: 'login' }" class="dropdown-item"
                       >Đăng nhập</router-link
                     >
                   </li>
-                  <li v-show="isLogin === null">
+                  <li v-show="!isLogin">
                     <router-link
                       :to="{ name: 'register' }"
                       class="dropdown-item"
@@ -201,7 +177,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watchEffect } from "vue";
+import { computed, onMounted, ref, watchEffect, watch } from "vue";
 const isClick = ref(false);
 import { reactive } from "vue";
 import categoryService from "@/services/category.service";
@@ -211,6 +187,7 @@ import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import cartService from "@/services/cart.service";
 import { useCartStore } from "@/stores/cart";
+import { boolean } from "yup";
 
 const showLogoutSuccess = () => {
   ElMessage({
@@ -219,7 +196,7 @@ const showLogoutSuccess = () => {
   });
 };
 
-const number = computed(() => cartStore.totalCart);
+const number = ref(0);
 const router = useRouter();
 const cartStore = useCartStore();
 const authStore = useAuthStore();
@@ -231,8 +208,7 @@ const handleLogOut = async () => {
     showLogoutSuccess();
     setTimeout(() => {
       router.push({ name: "login" });
-      authStore.logout();
-    }, 500);
+    });
   } catch (error) {
     console.log(error.response);
   }
@@ -249,18 +225,28 @@ const fetchListCategory = async () => {
   }
 };
 
-// const countCart = async () => {
-//   try {
-//     const response = await cartService.count(authStore.user_id);
-//     number.value = response.number;
-//   } catch (error) {
-//     console.log(error.response);
-//   }
-// };
+const countCart = async () => {
+  try {
+    const response = await cartService.count();
+    number.value = response.number;
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+watch(isLogin, (newVal, oldVal) => {
+  if (newVal) {
+    countCart();
+  }
+  if (oldVal) {
+    number.value = 0;
+  }
+});
 
 onMounted(() => {
   fetchListCategory();
-  cartStore.count();
+
+  countCart();
 
   // console.log(isLogin);
 });
@@ -269,13 +255,8 @@ const toggleNavigatorOne = () => {
 };
 
 watchEffect(() => {
-  // countCart();
-  cartStore.count();
+  countCart();
 });
-
-const handleRedirect = () => {
-  alert("CHO Hao");
-};
 </script>
 
 <style scoped>

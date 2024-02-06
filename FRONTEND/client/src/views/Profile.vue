@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container mt-1">
     <div class="row">
       <div class="col-xl-8">
         <div class="card">
@@ -12,87 +12,51 @@
                     class="img-fluid avatar-xxl rounded-circle"
                     alt=""
                   />
-                  <h4 class="text-primary font-size-20 mt-3 mb-2">
+                  <h4 class="text-dark font-size-20 mt-3 mb-2">
                     {{ userData.name }}
                   </h4>
-                  <h5 class="text-muted font-size-13 mb-0">Web Designer</h5>
                 </div>
               </div>
               <!-- end col -->
               <div class="col-md-9">
                 <div class="ms-3">
                   <div>
-                    <h4 class="card-title mb-2">Biography</h4>
-                    <p class="mb-0 text-muted">
-                      Hi I'm Jansh,has been the industry's standard dummy text
-                      To an English person alteration text.
-                    </p>
-                  </div>
-                  <div class="row my-4">
-                    <div class="col-md-12">
-                      <div>
-                        <p class="text-muted mb-2 fw-medium">
-                          <i class="mdi mdi-email-outline me-2"></i
-                          >Janshwells@probic.com
-                        </p>
-                        <p class="text-muted fw-medium mb-0">
-                          <i class="mdi mdi-phone-in-talk-outline me-2"></i
-                          >418-955-4703
-                        </p>
-                      </div>
+                    <h4 class="card-title mb-2">Thông tin khách hàng</h4>
+                    <div class="table-responsive">
+                      <table class="table table-bordered mb-0">
+                        <tbody>
+                          <tr>
+                            <th scope="row">Họ và tên</th>
+                            <td>
+                              <input
+                                style="width: 100%; border: none"
+                                type="text"
+                                v-model="userData.name"
+                              />
+                            </td>
+                          </tr>
+                          <!-- end tr -->
+                          <tr>
+                            <th scope="row">Email</th>
+                            <td>
+                              <input
+                                style="width: 100%; border: none"
+                                type="text"
+                                v-model="userData.email"
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">Điểm tích lũy</th>
+                            <td>10</td>
+                          </tr>
+                          <!-- end tr -->
+                        </tbody>
+                        <!-- end tbody -->
+                      </table>
+                      <!-- end table -->
                     </div>
-                    <!-- end col -->
                   </div>
-                  <!-- end row -->
-
-                  <ul
-                    class="nav nav-tabs nav-tabs-custom border-bottom-0 mt-3 nav-justfied"
-                    role="tablist"
-                  >
-                    <li class="nav-item" role="presentation">
-                      <a
-                        class="nav-link px-4"
-                        href="https://bootdey.com/snippets/view/profile-projects"
-                        target="__blank"
-                      >
-                        <span class="d-block d-sm-none"
-                          ><i class="fas fa-home"></i
-                        ></span>
-                        <span class="d-none d-sm-block">Projects</span>
-                      </a>
-                    </li>
-                    <!-- end li -->
-                    <li class="nav-item" role="presentation">
-                      <a
-                        class="nav-link px-4 active"
-                        data-bs-toggle="tab"
-                        href="#tasks-tab"
-                        role="tab"
-                        aria-selected="false"
-                        tabindex="-1"
-                      >
-                        <span class="d-block d-sm-none"
-                          ><i class="mdi mdi-menu-open"></i
-                        ></span>
-                        <span class="d-none d-sm-block">Tasks</span>
-                      </a>
-                    </li>
-                    <!-- end li -->
-                    <li class="nav-item" role="presentation">
-                      <a
-                        class="nav-link px-4"
-                        href="https://bootdey.com/snippets/view/profile-with-team-section"
-                        target="__blank"
-                      >
-                        <span class="d-block d-sm-none"
-                          ><i class="mdi mdi-account-group-outline"></i
-                        ></span>
-                        <span class="d-none d-sm-block">Team</span>
-                      </a>
-                    </li>
-                    <!-- end li -->
-                  </ul>
-                  <!-- end ul -->
                 </div>
               </div>
               <!-- end col -->
@@ -101,457 +65,14 @@
           </div>
           <!-- end card body -->
         </div>
-        <!-- end card -->
-
+        <hr />
         <div class="card">
-          <div class="tab-content p-4">
+          <div class="tab-content">
             <div class="tab-pane active show" id="tasks-tab" role="tabpanel">
-              <h4 class="card-title mb-4">Tasks</h4>
+              <h4 class="card-title mb-4">Đơn hàng của bạn</h4>
 
               <div class="row">
                 <div class="col-xl-12">
-                  <div class="task-list-box" id="landing-task">
-                    <div id="task-item-1">
-                      <div class="card task-box rounded-3">
-                        <div class="card-body">
-                          <div class="row align-items-center">
-                            <div class="col-xl-6 col-sm-5">
-                              <div class="checklist form-check font-size-15">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="customCheck1"
-                                />
-                                <label
-                                  class="form-check-label ms-1 task-title"
-                                  for="customCheck1"
-                                  >Create a New Landing</label
-                                >
-                              </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-xl-6 col-sm-7">
-                              <div class="row align-items-center">
-                                <div class="col-xl-5 col-md-6 col-sm-5">
-                                  <div
-                                    class="avatar-group mt-3 mt-xl-0 task-assigne"
-                                  >
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        data-bs-toggle="tooltip"
-                                        value="member-2"
-                                        data-bs-placement="top"
-                                        aria-label="Mark Powell"
-                                        data-bs-original-title="Mark Powell"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        data-bs-toggle="tooltip"
-                                        value="member-4"
-                                        data-bs-placement="top"
-                                        aria-label="Craig Hall"
-                                        data-bs-original-title="Craig Hall"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-block"
-                                        data-bs-toggle="tooltip"
-                                        value="member-11"
-                                        data-bs-placement="top"
-                                        data-bs-original-title="Sarah Kerns"
-                                      >
-                                        <div class="avatar-sm">
-                                          <div
-                                            class="avatar-title rounded-circle bg-info"
-                                          >
-                                            S
-                                          </div>
-                                        </div>
-                                      </a>
-                                    </div>
-                                  </div>
-                                  <!-- end avatar group -->
-                                </div>
-                                <!-- end col -->
-                                <div class="col-xl-7 col-md-6 col-sm-7">
-                                  <div
-                                    class="d-flex flex-wrap gap-3 mt-3 mt-xl-0 justify-content-md-end"
-                                  >
-                                    <div>
-                                      <span
-                                        class="badge rounded-pill badge-soft-warning font-size-11 task-status"
-                                        >Progress</span
-                                      >
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="mb-0 text-muted fw-medium"
-                                        ><i
-                                          class="mdi mdi-checkbox-marked-circle-outline me-1"
-                                        ></i
-                                        >4/8
-                                      </a>
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="mb-0 text-muted fw-medium"
-                                        data-bs-toggle="modal"
-                                        data-bs-target=".bs-example-new-task"
-                                        ><i
-                                          class="mdi mdi-square-edit-outline font-size-16 align-middle"
-                                          onclick="editTask('task-item-1')"
-                                        ></i
-                                      ></a>
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="delete-item"
-                                        onclick="deleteProjects('task-item-1')"
-                                      >
-                                        <i
-                                          class="mdi mdi-trash-can-outline align-middle font-size-16 text-danger"
-                                        ></i>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!-- end col -->
-                              </div>
-                              <!-- end row -->
-                            </div>
-                            <!-- end col -->
-                          </div>
-                          <!-- end row -->
-                        </div>
-                        <!-- end cardbody -->
-                      </div>
-                      <!-- end card -->
-                    </div>
-                  </div>
-                  <!-- end -->
-
-                  <div class="task-list-box" id="design-task">
-                    <div id="task-item-2">
-                      <div class="card task-box rounded-3">
-                        <div class="card-body">
-                          <div class="row align-items-center">
-                            <div class="col-xl-6 col-sm-5">
-                              <div class="checklist form-check font-size-15">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="customCheck2"
-                                />
-                                <label
-                                  class="form-check-label ms-1 task-title"
-                                  for="customCheck2"
-                                  >Create a Layout Design</label
-                                >
-                              </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-xl-6 col-sm-7">
-                              <div class="row align-items-center">
-                                <div class="col-xl-5 col-md-6 col-sm-5">
-                                  <div
-                                    class="avatar-group mt-3 mt-xl-0 task-assigne"
-                                  >
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        value="member-3"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        aria-label="Terrell Soto"
-                                        data-bs-original-title="Terrell Soto"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        value="member-2"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        aria-label="Ruhi Shah"
-                                        data-bs-original-title="Ruhi Shah"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        value="member-1"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        aria-label="Ruhi Shah"
-                                        data-bs-original-title="Ruhi Shah"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                  </div>
-                                  <!-- end avatar group -->
-                                </div>
-                                <!-- end col -->
-                                <div class="col-xl-7 col-md-6 col-sm-7">
-                                  <div
-                                    class="d-flex flex-wrap gap-3 mt-3 mt-xl-0 justify-content-md-end"
-                                  >
-                                    <div>
-                                      <span
-                                        class="badge rounded-pill badge-soft-warning font-size-11 task-status"
-                                        >Progress</span
-                                      >
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="mb-0 text-muted fw-medium"
-                                        ><i
-                                          class="mdi mdi-checkbox-marked-circle-outline me-1"
-                                        ></i
-                                        >8/12
-                                      </a>
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="mb-0 text-muted fw-medium"
-                                        data-bs-toggle="modal"
-                                        data-bs-target=".bs-example-new-task"
-                                        ><i
-                                          class="mdi mdi-square-edit-outline font-size-16 align-middle"
-                                          onclick="editTask('task-item-2')"
-                                        ></i
-                                      ></a>
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="delete-item"
-                                        onclick="deleteProjects('task-item-2')"
-                                      >
-                                        <i
-                                          class="mdi mdi-trash-can-outline font-size-16 text-danger align-middle"
-                                        ></i>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!-- end col -->
-                              </div>
-                              <!-- end row -->
-                            </div>
-                            <!-- end col -->
-                          </div>
-                          <!-- end row -->
-                        </div>
-                        <!-- end cardbody -->
-                      </div>
-                      <!-- end card -->
-                    </div>
-                  </div>
-                  <!-- end -->
-
-                  <div class="task-list-box" id="blog-task">
-                    <div id="task-item-3">
-                      <div class="card task-box rounded-3">
-                        <div class="card-body">
-                          <div class="row align-items-center">
-                            <div class="col-xl-6 col-sm-5">
-                              <div class="checklist form-check font-size-15">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="customCheck3"
-                                />
-                                <label
-                                  class="form-check-label ms-1 task-title"
-                                  for="customCheck3"
-                                  >Create a Blog Template UI</label
-                                >
-                              </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-xl-6 col-sm-7">
-                              <div class="row align-items-center">
-                                <div class="col-xl-5 col-md-6 col-sm-5">
-                                  <div
-                                    class="avatar-group mt-3 mt-xl-0 task-assigne"
-                                  >
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        value="member-6"
-                                        aria-label="Scott Edward"
-                                        data-bs-original-title="Scott Edward"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-block"
-                                        data-bs-toggle="tooltip"
-                                        value="member-12"
-                                        data-bs-placement="top"
-                                        data-bs-original-title="Denny Silva"
-                                      >
-                                        <div class="avatar-sm">
-                                          <div
-                                            class="avatar-title rounded-circle bg-primary"
-                                          >
-                                            D
-                                          </div>
-                                        </div>
-                                      </a>
-                                    </div>
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        value="member-10"
-                                        aria-label="Betty Cooney"
-                                        data-bs-original-title="Betty Cooney"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        value="member-5"
-                                        aria-label="Michael Jackson"
-                                        data-bs-original-title="Michael Jackson"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                  </div>
-                                  <!-- end avatar group -->
-                                </div>
-                                <!-- end col -->
-                                <div class="col-xl-7 col-md-6 col-sm-7">
-                                  <div
-                                    class="d-flex flex-wrap gap-3 mt-3 mt-xl-0 justify-content-md-end"
-                                  >
-                                    <div>
-                                      <span
-                                        class="badge rounded-pill badge-soft-danger font-size-11 task-status"
-                                        >Pending</span
-                                      >
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="mb-0 text-muted fw-medium"
-                                        ><i
-                                          class="mdi mdi-checkbox-marked-circle-outline me-1"
-                                        ></i
-                                        >0/6
-                                      </a>
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="mb-0 text-muted fw-medium"
-                                        data-bs-toggle="modal"
-                                        data-bs-target=".bs-example-new-task"
-                                        ><i
-                                          class="mdi mdi-square-edit-outline font-size-16 align-middle"
-                                          onclick="editTask('task-item-3')"
-                                        ></i
-                                      ></a>
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="delete-item"
-                                        onclick="deleteProjects('task-item-3')"
-                                      >
-                                        <i
-                                          class="mdi mdi-trash-can-outline font-size-16 align-middle text-danger"
-                                        ></i>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!-- end col -->
-                              </div>
-                              <!-- end row -->
-                            </div>
-                            <!-- end col -->
-                          </div>
-                          <!-- end row -->
-                        </div>
-                        <!-- end cardbody -->
-                      </div>
-                      <!-- end card -->
-                    </div>
-                  </div>
-                  <!-- end -->
-
                   <div class="task-list-box" id="comp-task">
                     <div id="task-item-4">
                       <div class="card task-box rounded-3">
@@ -658,351 +179,68 @@
                       <!-- end card -->
                     </div>
                   </div>
-                  <!-- end -->
-
-                  <div class="task-list-box" id="app-task">
-                    <div id="task-item-5">
-                      <div class="card task-box rounded-3">
-                        <div class="card-body">
-                          <div class="row align-items-center">
-                            <div class="col-xl-6 col-sm-5">
-                              <div class="checklist form-check font-size-15">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="customComponents"
-                                />
-                                <label
-                                  class="form-check-label ms-1 task-title"
-                                  for="customComponents"
-                                  >Components Pages</label
-                                >
-                              </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-xl-6 col-sm-7">
-                              <div class="row align-items-center">
-                                <div class="col-xl-5 col-md-6 col-sm-5">
-                                  <div
-                                    class="avatar-group mt-3 mt-xl-0 task-assigne"
-                                  >
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        data-bs-toggle="tooltip"
-                                        value="member-7"
-                                        data-bs-placement="top"
-                                        aria-label="Eric Williams"
-                                        data-bs-original-title="Eric Williams"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        data-bs-toggle="tooltip"
-                                        value="member-9"
-                                        data-bs-placement="top"
-                                        aria-label="Richard Millar"
-                                        data-bs-original-title="Richard Millar"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar8.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        data-bs-toggle="tooltip"
-                                        value="member-8"
-                                        data-bs-placement="top"
-                                        aria-label="Tama Turner"
-                                        data-bs-original-title="Tama Turner"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar8.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                  </div>
-                                  <!-- end avatar group -->
-                                </div>
-                                <!-- end col -->
-                                <div class="col-xl-7 col-md-6 col-sm-7">
-                                  <div
-                                    class="d-flex flex-wrap gap-3 mt-3 mt-xl-0 justify-content-md-end"
-                                  >
-                                    <div>
-                                      <span
-                                        class="badge rounded-pill badge-soft-danger font-size-11 task-status"
-                                        >Pending</span
-                                      >
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="mb-0 text-muted fw-medium"
-                                        ><i
-                                          class="mdi mdi-checkbox-marked-circle-outline me-1"
-                                        ></i
-                                        >7/17
-                                      </a>
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="mb-0 text-muted fw-medium"
-                                        data-bs-toggle="modal"
-                                        data-bs-target=".bs-example-new-task"
-                                        ><i
-                                          class="mdi mdi-square-edit-outline font-size-16 align-middle"
-                                          onclick="editTask('task-item-5')"
-                                        ></i
-                                      ></a>
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="delete-item"
-                                        onclick="deleteProjects('task-item-5')"
-                                      >
-                                        <i
-                                          class="mdi mdi-trash-can-outline font-size-16 align-middle text-danger"
-                                        ></i>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!-- end col -->
-                              </div>
-                              <!-- end row -->
-                            </div>
-                            <!-- end col -->
-                          </div>
-                          <!-- end row -->
-                        </div>
-                        <!-- end cardbody -->
-                      </div>
-                      <!-- end card -->
-                    </div>
-                  </div>
-                  <!-- end -->
-
-                  <div class="task-list-box" id="gallery-task">
-                    <div id="task-item-6">
-                      <div class="card task-box rounded-3">
-                        <div class="card-body">
-                          <div class="row align-items-center">
-                            <div class="col-xl-6 col-sm-5">
-                              <div class="checklist form-check font-size-15">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="customGallry"
-                                  checked=""
-                                />
-                                <label
-                                  class="form-check-label ms-1 task-title"
-                                  for="customGallry"
-                                  >Create a Gallery Pages</label
-                                >
-                              </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-xl-6 col-sm-7">
-                              <div class="row align-items-center">
-                                <div class="col-xl-5 col-md-6 col-sm-5">
-                                  <div
-                                    class="avatar-group mt-3 mt-xl-0 task-assigne"
-                                  >
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        data-bs-toggle="tooltip"
-                                        value="member-5"
-                                        data-bs-placement="top"
-                                        aria-label="John Walker"
-                                        data-bs-original-title="John Walker"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        value="member-4"
-                                        aria-label="Willie Garcia"
-                                        data-bs-original-title="Willie Garcia"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
-                                    </div>
-                                  </div>
-                                  <!-- end avatar group -->
-                                </div>
-                                <!-- end col -->
-                                <div class="col-xl-7 col-md-6 col-sm-7">
-                                  <div
-                                    class="d-flex flex-wrap gap-3 mt-3 mt-xl-0 justify-content-md-end"
-                                  >
-                                    <div>
-                                      <span
-                                        class="badge rounded-pill badge-soft-success font-size-11 task-status"
-                                        >Completed</span
-                                      >
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="mb-0 text-muted fw-medium"
-                                        ><i
-                                          class="mdi mdi-checkbox-marked-circle-outline me-1"
-                                        ></i
-                                        >5/5
-                                      </a>
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="mb-0 text-muted fw-medium"
-                                        data-bs-toggle="modal"
-                                        data-bs-target=".bs-example-new-task"
-                                        ><i
-                                          class="mdi mdi-square-edit-outline font-size-16 align-middle"
-                                          onclick="editTask('task-item-6')"
-                                        ></i
-                                      ></a>
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="delete-item"
-                                        onclick="deleteProjects('task-item-6')"
-                                      >
-                                        <i
-                                          class="mdi mdi-trash-can-outline font-size-16 align-middle text-danger"
-                                        ></i>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!-- end col -->
-                              </div>
-                              <!-- end row -->
-                            </div>
-                            <!-- end col -->
-                          </div>
-                          <!-- end row -->
-                        </div>
-                        <!-- end cardbody -->
-                      </div>
-                      <!-- end card -->
-                    </div>
-                  </div>
-                  <!-- end -->
                 </div>
-                <!-- end col -->
               </div>
-              <!-- end row -->
             </div>
-            <!-- end tab pane -->
           </div>
         </div>
-        <!-- end card -->
       </div>
-      <!-- end col -->
 
       <div class="col-xl-4">
         <div class="card">
           <div class="card-body">
-            <div class="pb-2">
-              <h4 class="card-title mb-3">About</h4>
-              <p>
-                Hi I'm Jansh, has been the industry's standard dummy text To an
-                English person, it will seem like simplified.
-              </p>
-              <ul class="ps-3 mb-0">
-                <li>it will seem like simplified.</li>
-                <li>
-                  To achieve this, it would be necessary to have uniform
-                  pronunciation
-                </li>
-              </ul>
-              <!-- end ul -->
-            </div>
-            <hr />
-            <div class="pt-2">
-              <h4 class="card-title mb-4">My Skill</h4>
-              <div class="d-flex gap-2 flex-wrap">
-                <span class="badge badge-soft-secondary p-2">HTML</span>
-                <span class="badge badge-soft-secondary p-2">Bootstrap</span>
-                <span class="badge badge-soft-secondary p-2">Scss</span>
-                <span class="badge badge-soft-secondary p-2">Javascript</span>
-                <span class="badge badge-soft-secondary p-2">React</span>
-                <span class="badge badge-soft-secondary p-2">Angular</span>
-              </div>
-            </div>
-          </div>
-          <!-- end cardbody -->
-        </div>
-        <!-- end card -->
-
-        <div class="card">
-          <div class="card-body">
             <div>
-              <h4 class="card-title mb-4">Personal Details</h4>
-              <div class="table-responsive">
-                <table class="table table-bordered mb-0">
-                  <tbody>
-                    <tr>
-                      <th scope="row">Name</th>
-                      <td>Jansh Wells</td>
-                    </tr>
-                    <!-- end tr -->
-                    <tr>
-                      <th scope="row">Location</th>
-                      <td>California, United States</td>
-                    </tr>
-                    <!-- end tr -->
-                    <tr>
-                      <th scope="row">Language</th>
-                      <td>English</td>
-                    </tr>
-                    <!-- end tr -->
-                    <tr>
-                      <th scope="row">Website</th>
-                      <td>abc12@probic.com</td>
-                    </tr>
-                    <!-- end tr -->
-                  </tbody>
-                  <!-- end tbody -->
-                </table>
-                <!-- end table -->
+              <h4 class="card-title mb-4">Địa chỉ của bạn</h4>
+              <div
+                class="d-flex flex-column flex-md-row align-items-center justify-content-center"
+              >
+                <div class="list-group">
+                  <a
+                    v-for="(data, index) in listAddressUser"
+                    class="list-group-item d-flex gap-3 py-3"
+                  >
+                    <i class="fa-solid fa-location-dot"></i>
+                    <div class="d-flex gap-2 w-100 justify-content-between">
+                      <div>
+                        <h6 class="mb-0">Địa chỉ {{ index + 1 }}</h6>
+                        <p class="mb-0 opacity-75">
+                          {{ data.address }} {{ data.commue }}
+                          {{ data.district }} {{ data.city }} -
+                          {{ data.name }} - {{ data.phone }}
+                        </p>
+                      </div>
+                      <small class="opacity-50 text-nowrap mt-4"
+                        ><button
+                          class="border-none"
+                          @click="handleDeteleAddress(index)"
+                        >
+                          <i class="fa-solid fa-trash"></i></button
+                      ></small>
+                    </div>
+                    <hr />
+                  </a>
+
+                  <a
+                    href="#"
+                    class="list-group-item list-group-item-action d-flex gap-3 py-3"
+                    aria-current="true"
+                  >
+                    <div
+                      class="d-flex w-100 justify-content-between"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal"
+                    >
+                      <div>
+                        <p class="mb-0 opacity-75">
+                          <i
+                            class="fa-solid fa-plus border border-dark rounded-circle"
+                          ></i>
+                          Thêm địa chỉ mới.
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -1010,10 +248,156 @@
         </div>
         <!-- end card -->
 
+        <!-- Start Model -->
+        <div
+          class="modal fade"
+          id="exampleModal"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">
+                  Thêm địa chỉ mới
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered mb-0">
+                    <tbody>
+                      <tr>
+                        <th scope="row">Họ và tên</th>
+                        <td>
+                          <input
+                            type="text"
+                            name="name"
+                            v-model="addressInfoData.name"
+                            placeholder="Vui lòng nhập họ tên"
+                          />
+                        </td>
+                      </tr>
+                      <span class="text-danger">{{ nameError }}</span>
+                      <tr>
+                        <th scope="row">Số điện thoại</th>
+                        <td>
+                          <input
+                            type="text"
+                            name="phone"
+                            v-model="addressInfoData.phone"
+                            placeholder="Vui lòng nhập số điện thoại"
+                          />
+                        </td>
+                      </tr>
+                      <span class="text-danger">{{ phoneError }}</span>
+                      <tr>
+                        <th scope="row">Tỉnh/Thành phố</th>
+                        <td>
+                          <select name="city" id="city" v-model="cityAddress">
+                            <option value="0">--Chọn tỉnh/thành phố--</option>
+                            <option
+                              v-for="data in addressData.data"
+                              :value="data.level1_id"
+                              :key="data.level1_id"
+                            >
+                              {{ data.name }}
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+                      <span class="text-danger">{{ cityError }}</span>
+                      <!-- end tr -->
+                      <tr>
+                        <th scope="row">Quận/Huyện</th>
+                        <td>
+                          <select
+                            v-show="cityAddress"
+                            name="district"
+                            id="district"
+                            v-model="districtAddress"
+                          >
+                            <option value="0">--Quận/Huyện--</option>
+                            <option
+                              v-for="data in listDistrict"
+                              :value="data.level2_id"
+                              :key="data.level2_id"
+                            >
+                              {{ data.name }}
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+                      <span class="text-danger">{{ districtError }}</span>
+                      <tr>
+                        <th scope="row">Phường/Xã</th>
+                        <td>
+                          <select
+                            v-show="districtAddress"
+                            name="commue"
+                            id="commue"
+                            v-model="commueAddress"
+                          >
+                            <option value="0">--Phường/Xã--</option>
+                            <option
+                              v-for="data in listCommune"
+                              :value="data.level3_id"
+                              :key="data.level3_id"
+                            >
+                              {{ data.name }}
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+                      <span class="text-danger">{{ commueError }}</span>
+                      <tr>
+                        <th scope="row">Địa chỉ cụ thể</th>
+                        <td>
+                          <input
+                            type="text"
+                            name="address"
+                            v-model="addressInfoData.address"
+                          />
+                        </td>
+                      </tr>
+                      <span class="text-danger">{{ addressError }}</span>
+                      <!-- end tr -->
+                    </tbody>
+                    <!-- end tbody -->
+                  </table>
+                  <!-- end table -->
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Đóng
+                </button>
+                <button
+                  @click="handleCreateAddress"
+                  type="button"
+                  class="btn btn-primary"
+                >
+                  Thêm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Model -->
         <div class="card">
           <div class="card-body">
             <div>
-              <h4 class="card-title mb-4">Work Experince</h4>
+              <h4 class="card-title mb-4">Quản lý tài khoản</h4>
               <ul class="list-unstyled work-activity mb-0">
                 <li class="work-item" data-date="2020-21">
                   <h6 class="lh-base mb-0">ABCD Company</h6>
@@ -1045,19 +429,154 @@
 </template>
 
 <script setup>
+import * as Yup from "yup";
 import userService from "@/services/user.service";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watchEffect } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import addressData from "@/assets/address/dvhc.json";
+import { compose } from "element-plus/es/components/table/src/util";
+import { ElLoading, ElMessage } from "element-plus";
+
+const schema = Yup.object().shape({
+  name: Yup.string().required("Họ và tên không được để trống"),
+  phone: Yup.string()
+    .min(10, "Số điện thoại phải 10 ký tự")
+    .max(10, "Số điện thoại phải 10 ký tự")
+    .required("Số điện thoại không được để trống"),
+  city: Yup.string().required("Tỉnh thành phố không được để trống"),
+  district: Yup.string().required("Quận huyện không được để trống"),
+  commue: Yup.string().required("Xã phường không được để trống"),
+  address: Yup.string().required("Địa chỉ cụ thể không được để trống"),
+});
 
 const authStore = useAuthStore();
 const userData = ref({});
+const listAddressUser = ref([]);
+
+const addressInfoData = reactive({
+  name: "",
+  phone: "",
+  city: "",
+  district: "",
+  commue: "",
+  address: "",
+});
+const cityAddress = ref(0);
+const districtAddress = ref(0);
+const commueAddress = ref(0);
+const listDistrict = ref([]);
+const listCommune = ref([]);
+
 const fetchUserData = async () => {
   try {
     const userId = authStore.user_id;
 
     const response = await userService.get(userId);
     userData.value = response.data;
-    console.log(response);
+    console.log(response.data.address);
+    listAddressUser.value = JSON.parse(response.data.address);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const getDataDistric = (id) => {
+  return addressData.data.filter((data) => data.level1_id === id);
+};
+
+const getDataCommune = (id) => {
+  return listDistrict.value.filter((data) => data.level2_id === id);
+};
+
+const getNameCommune = (id) => {
+  return listCommune.value.filter((data) => data.level3_id === id);
+};
+
+const createAddress = async (data) => {
+  try {
+    const response = await userService.createAddress(data);
+    console.log("After create address: ", response);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const showSuccess = (message) => {
+  ElMessage({
+    message: message,
+    type: "success",
+  });
+};
+
+// Handle create address
+const nameError = ref(null);
+const phoneError = ref(null);
+const cityError = ref(null);
+const districtError = ref(null);
+const commueError = ref(null);
+const addressError = ref(null);
+const handleCreateAddress = () => {
+  nameError.value = null;
+  phoneError.value = null;
+  cityError.value = null;
+  districtError.value = null;
+  commueError.value = null;
+  addressError.value = null;
+  schema
+    .validate(addressInfoData, { abortEarly: false })
+    .then(() => {
+      nameError.value = null;
+      phoneError.value = null;
+      cityError.value = null;
+      districtError.value = null;
+      commueError.value = null;
+      addressError.value = null;
+
+      const loading = ElLoading.service({
+        lock: true,
+        text: "Đang xử lý...",
+        background: "rgba(0,0,0, 0.7)",
+      });
+      createAddress(addressInfoData).then(() => {
+        showSuccess("Thêm địa chỉ thành công.");
+        setTimeout(() => {
+          loading.close();
+          fetchUserData();
+        }, 1000);
+      });
+    })
+    .catch((errors) => {
+      errors.inner.forEach((error) => {
+        if (error.path == "name") {
+          nameError.value = error.message;
+        }
+        if (error.path == "phone") {
+          phoneError.value = error.message;
+        }
+        if (error.path == "city") {
+          cityError.value = error.message;
+        }
+        if (error.path == "district") {
+          districtError.value = error.message;
+        }
+        if (error.path == "commue") {
+          commueError.value = error.message;
+        }
+        if (error.path == "address") {
+          addressError.value = error.message;
+        }
+      });
+    });
+  console.log("The last info: ", addressInfoData);
+};
+
+// Hanlde delete address
+
+const handleDeteleAddress = async (index) => {
+  try {
+    const response = await userService.deleteAddress(index);
+    showSuccess("Xóa địa chỉ thành công.");
+    fetchUserData();
   } catch (error) {
     console.log(error.response);
   }
@@ -1065,10 +584,41 @@ const fetchUserData = async () => {
 
 onMounted(() => {
   fetchUserData();
+
+  // console.log("GET: ", getDataDistric("01")[0].name);
+});
+
+watchEffect(() => {
+  if (cityAddress.value != 0) {
+    const district = getDataDistric(cityAddress.value);
+    listDistrict.value = district[0].level2s;
+    console.log("GET: ", listDistrict);
+  }
+
+  if (districtAddress.value != 0) {
+    listCommune.value = getDataCommune(districtAddress.value)[0].level3s;
+    console.log("Distric address: ", listCommune);
+  }
+
+  if (commueAddress.value != 0) {
+    // console.log("cityAddress: ", cityAddress.value);
+    // console.log("districtAddress: ", districtAddress.value);
+    // console.log("commueAddress: ", commueAddress.value);
+    addressInfoData.city = getDataDistric(cityAddress.value)[0].name;
+    addressInfoData.district = getDataCommune(districtAddress.value)[0].name;
+    addressInfoData.commue = getNameCommune(commueAddress.value)[0].name;
+  }
 });
 </script>
 
 <style>
+.border-none {
+  border: none;
+}
+.border-none:hover {
+  color: #038edc;
+}
+
 .avatar-xxl {
   height: 7rem;
   width: 7rem;

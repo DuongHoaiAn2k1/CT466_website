@@ -16,7 +16,9 @@ return new class extends Migration
             $table->integer('quantity');
             $table->integer('total_price');
             $table->unsignedBigInteger('order_id');
-            $table->foreign('order_id')->references('order_id')->on('orders');
+            $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('cascade');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('product_id')->on('products');
             $table->timestamps();
         });
     }

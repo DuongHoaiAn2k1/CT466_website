@@ -156,6 +156,8 @@ import { useAuthStore } from "@/stores/auth";
 import cartService from "@/services/cart.service";
 import { useCartStore } from "@/stores/cart";
 import { ElNotification, ElMessage } from "element-plus";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const cartStore = useCartStore();
 const authStore = useAuthStore();
 const listCategory = reactive({});
@@ -172,6 +174,14 @@ const addToCartSuccess = () => {
 const addToCartWarning = () => {
   ElMessage({
     message: "Đã quá số lượng cho phép",
+    type: "warning",
+  });
+};
+
+const warning = () => {
+  ElNotification({
+    title: "Warning",
+    message: "Vui lòng đăng nhập để tiến hành mua sản phẩm",
     type: "warning",
   });
 };
@@ -218,29 +228,39 @@ onMounted(() => {
   fetchList();
 });
 const addToCart = async (product_id) => {
-  try {
-    const user_id = authStore.user_id;
-    const response = await cartService.create({
-      user_id: user_id,
-      product_id: product_id,
-    });
-    cartStore.count();
-    console.log("Ket qua them: ", response);
-    addToCartSuccess();
-  } catch (error) {
-    console.log(error.response);
-    if (error.response.data.message === "Qúa số lượng cho phép") {
-      addToCartWarning();
+  if (authStore.isUserLoggedIn) {
+    try {
+      const user_id = authStore.user_id;
+      const response = await cartService.create({
+        user_id: user_id,
+        product_id: product_id,
+        quantity: 1,
+      });
+      cartStore.count();
+      console.log("Ket qua them: ", response);
+      addToCartSuccess();
+    } catch (error) {
+      console.log(error.response);
+      if (error.response.data.message === "Qúa số lượng cho phép") {
+        addToCartWarning();
+      }
     }
+  } else {
+    warning();
+    setTimeout(() => {
+      router.push({ name: "login" });
+    }, 500);
   }
 };
 
-function formatCurrency(amount) {
-  return amount.toLocaleString("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  });
-}
+const formatCurrency = (amount) => {
+  return (
+    amount?.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }) || ""
+  );
+};
 </script>
 
 <style scoped>

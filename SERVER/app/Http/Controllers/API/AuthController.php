@@ -123,7 +123,7 @@ class AuthController extends Controller
 
             auth()->invalidate();
             $token = auth()->login($user);
-            // $refreshToken = $this->createRefreshToken();
+            $refreshToken = $this->createRefreshToken();
             // return response()->json(['refreshToken: ' => $refreshToken], 201);
             return $this->respondWithToken($token, $refreshToken, $decoded['sub']);
         } catch (JWTException $e) {

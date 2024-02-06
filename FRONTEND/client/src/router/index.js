@@ -48,6 +48,11 @@ const routes = [
     name: "token",
     component: () => import("@/components/ProcessToken.vue"),
   },
+  {
+    path: "/payment",
+    name: "payment",
+    component: () => import("@/views/Payment.vue"),
+  },
 ];
 
 const router = createRouter({

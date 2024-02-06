@@ -47,8 +47,6 @@ export default (baseURL) => {
         error.response.statusText === "Unauthorized"
       ) {
         window.location.href = "http://localhost:3001/tokenProcess";
-
-        // alert("Cho Hao");
       } else if (
         error.request &&
         error.response.status === 500 &&

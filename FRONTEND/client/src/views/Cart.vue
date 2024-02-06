@@ -144,12 +144,41 @@
                         <span class="fw-bold">{{ formatCurrency(total) }}</span>
                       </td>
                     </tr>
+                    <tr class="bg-light">
+                      <th>Địa chỉ:</th>
+
+                      <td>
+                        <select
+                          name="addressToPay"
+                          v-model="addressToPay"
+                          id=""
+                          class="text-truncate"
+                        >
+                          <option value="" selected disabled>
+                            --Chọn một địa chỉ nhận hàng--
+                          </option>
+                          <option
+                            v-for="(data, index) in listAddress"
+                            :value="index"
+                            :key="index"
+                          >
+                            {{ data.address }} {{ data.commue }}
+                            {{ data.district }} {{ data.city }} -
+                            {{ data.name }} - {{ data.phone }}
+                          </option>
+                        </select>
+                        <span class="text-danger">{{ addressError }}</span>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
               <!-- end table-responsive -->
               <div class="row">
-                <button class="btn btn-dark mt-1 text-center">
+                <button
+                  @click="hanleRedirectPayment"
+                  class="btn btn-dark mt-1 text-center"
+                >
                   TIẾN HÀNH THANH TOÁN
                 </button>
               </div>
@@ -164,24 +193,43 @@
 
 <script setup>
 import { useAuthStore } from "@/stores/auth";
+import { useCartStore } from "@/stores/cart";
 import { onMounted, watchEffect } from "vue";
 import productService from "@/services/product.service";
 import cartService from "@/services/cart.service";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
-
+import userService from "@/services/user.service";
+import addressData from "@/assets/address/dvhc.json";
 const authStore = useAuthStore();
-
+const cartStore = useCartStore();
+const addressError = ref(null);
 const cartData = ref([]);
+const userData = ref([]);
 const listProduct = ref([]);
 const total = ref(0);
 const number = ref(0);
+const listAddress = ref([]);
+const router = useRouter();
 
+// Index của địa chỉ trong address json
+const addressToPay = ref("");
 const fetchListProduct = async () => {
   try {
     const response = await productService.getAll();
     listProduct.value = response.listProduct;
     console.log("List product: ", response.listProduct);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const fetchUserData = async () => {
+  try {
+    const response = await userService.get(authStore.user_id);
+    listAddress.value = JSON.parse(response.data.address);
+    console.log("User Data: ", listAddress);
   } catch (error) {
     console.log(error.response);
   }
@@ -241,6 +289,15 @@ const hanldeTotal = () => {
   });
 };
 
+const hanleRedirectPayment = () => {
+  if (addressToPay.value === "") {
+    addressError.value = "Địa chỉ không được để trống";
+  } else if (addressToPay.value !== "" || addressToPay.value === 0) {
+    addressError.value = "";
+    cartStore.setAddress(addressToPay.value);
+    router.push({ name: "payment" });
+  }
+};
 const showWarning = (message) => {
   ElNotification({
     title: "Warning",
@@ -254,6 +311,9 @@ onMounted(() => {
   fetchCartData().then(() => {
     hanldeTotal();
   });
+  fetchUserData();
+
+  console.log("Data address: ", addressData);
   // setTimeout(() => {
   //   hanldeTotal();
   // }, 1000);
@@ -261,6 +321,7 @@ onMounted(() => {
 
 watchEffect(() => {
   hanldeTotal();
+  console.log("Index address: ", addressToPay.value);
 });
 
 function formatCurrency(amount) {
@@ -334,5 +395,14 @@ a {
   background-clip: border-box;
   border: 1px solid #eff0f2;
   border-radius: 1rem;
+}
+
+/* Thêm một lớp 'text-truncate' để hiển thị dấu '...' */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* Đặt chiều rộng để kiểm soát kích thước của hộp select */
+  width: 100%; /* Bạn có thể điều chỉnh giá trị này theo nhu cầu */
 }
 </style>

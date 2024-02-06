@@ -13,9 +13,10 @@ class CartController extends Controller
         return "Hi";
     }
 
-    public function getByUserId($user_id)
+    public function get()
     {
         try {
+            $user_id = auth()->user()->id;
             $listCart = Cart::where('user_id', $user_id)->get();
             return response()->json([
                 'status' => 'success',

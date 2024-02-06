@@ -16,6 +16,14 @@ class UserService {
   async login(data) {
     return (await this.api.post("/login", data)).data;
   }
+
+  async createAddress(data) {
+    return (await this.api.patch("/address", data)).data;
+  }
+
+  async deleteAddress(index) {
+    return (await this.api.delete(`/address/${index}`)).data;
+  }
 }
 
 export default new UserService();

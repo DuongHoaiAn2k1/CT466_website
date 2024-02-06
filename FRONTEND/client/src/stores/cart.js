@@ -2,7 +2,9 @@ import { defineStore } from "pinia";
 import cartService from "@/services/cart.service";
 export const useCartStore = defineStore("cart", {
   state: () => ({
+    tempCart: [],
     totalCart: 0,
+    addressToPay: 0,
   }),
 
   actions: {
@@ -19,6 +21,10 @@ export const useCartStore = defineStore("cart", {
         }
       };
       countCart();
+    },
+
+    setAddress(index) {
+      this.addressToPay = index;
     },
   },
 });

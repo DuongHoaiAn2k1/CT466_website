@@ -9,6 +9,9 @@ use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\OrderDetailController;
+use App\Models\Order;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,11 +75,24 @@ Route::prefix('/product')->group(function () {
 });
 
 Route::prefix('/cart')->group(function () {
-    Route::get('/', [CartController::class, 'index']);
-    Route::get('/{id}', [CartController::class, 'getByUserId']);
+    // Route::get('/', [CartController::class, 'index']);
+    Route::get('/', [CartController::class, 'get']);
     Route::get('/user/count', [CartController::class, 'count']);
     Route::post('/', [CartController::class, 'create']);
     Route::patch('/decrease/{id}', [CartController::class, 'decrease']);
     Route::patch('/increase/{id}', [CartController::class, 'increase']);
     Route::delete('/{id}', [CartController::class, 'delete']);
+});
+
+Route::prefix('/order')->group(function () {
+    Route::get('/', [OrderController::class, 'get']);
+    Route::get('/getAll', [OrderController::class, 'getAll']);
+    Route::post('/', [OrderController::class, 'create']);
+    Route::delete('/{id}', [OrderController::class, 'delete']);
+    Route::get('/count', [OrderController::class, 'count']);
+});
+
+Route::prefix('/orderDetail')->group(function () {
+    Route::get('/', [OrderDetailController::class, 'get']);
+    Route::post('/', [OrderDetailController::class, 'create']);
 });
