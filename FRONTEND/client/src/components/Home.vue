@@ -236,7 +236,7 @@ const addToCart = async (product_id) => {
         product_id: product_id,
         quantity: 1,
       });
-      cartStore.count();
+      await cartStore.fetchCartCount();
       console.log("Ket qua them: ", response);
       addToCartSuccess();
     } catch (error) {

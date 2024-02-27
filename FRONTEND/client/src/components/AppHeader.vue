@@ -196,7 +196,7 @@ const showLogoutSuccess = () => {
   });
 };
 
-const number = ref(0);
+defineProps(["number"]);
 const router = useRouter();
 const cartStore = useCartStore();
 const authStore = useAuthStore();
@@ -225,28 +225,10 @@ const fetchListCategory = async () => {
   }
 };
 
-const countCart = async () => {
-  try {
-    const response = await cartService.count();
-    number.value = response.number;
-  } catch (error) {
-    console.log(error.response);
-  }
-};
-
-watch(isLogin, (newVal, oldVal) => {
-  if (newVal) {
-    countCart();
-  }
-  if (oldVal) {
-    number.value = 0;
-  }
-});
-
 onMounted(() => {
   fetchListCategory();
 
-  countCart();
+  // countCart();
 
   // console.log(isLogin);
 });
@@ -255,7 +237,7 @@ const toggleNavigatorOne = () => {
 };
 
 watchEffect(() => {
-  countCart();
+  // countCart();
 });
 </script>
 

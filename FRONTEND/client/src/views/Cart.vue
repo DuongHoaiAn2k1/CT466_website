@@ -10,7 +10,7 @@
     </h3>
     <div class="row">
       <div class="col-xl-8">
-        <div class="card border shadow-none">
+        <div class="border shadow-none">
           <div class="card-body" v-for="cart in cartData" :key="cart.cart_id">
             <div class="row align-items-start border-bottom pb-3">
               <div class="col-md-7 d-flex">
@@ -111,9 +111,14 @@
 
         <div class="row my-4">
           <div class="col-sm-6">
-            <router-link :to="{ name: 'home' }" class="btn btn-link text-muted">
+            <router-link
+              v-show="cartStore.count != 0"
+              :to="{ name: 'home' }"
+              class="btn btn-link text-muted"
+            >
               <i class="mdi mdi-arrow-left me-1"></i> Tiếp tục mua hàng
             </router-link>
+            <span v-show="cartStore.count == 0">Giỏ hàng của bạn trống</span>
           </div>
         </div>
         <!-- end row-->
@@ -121,7 +126,7 @@
 
       <div class="col-xl-4">
         <div class="mt-5 mt-lg-0">
-          <div class="card border shadow-none">
+          <div class="border shadow-none">
             <div class="card-header bg-transparent border-bottom py-3 px-4">
               <h5 class="font-size-20 mb-0">Chi tiết giỏ hàng</h5>
             </div>
@@ -130,11 +135,11 @@
                 <table class="table mb-0">
                   <tbody>
                     <tr>
-                      <td>Tổng tiền</td>
+                      <th>Tổng tiền:</th>
                       <td class="text-end">{{ formatCurrency(total) }}</td>
                     </tr>
                     <tr>
-                      <td>Tổng số sản phẩm :</td>
+                      <th>Tổng sản phẩm :</th>
                       <td class="text-end">{{ number }}</td>
                     </tr>
 
@@ -179,7 +184,7 @@
                   @click="hanleRedirectPayment"
                   class="btn btn-dark mt-1 text-center"
                 >
-                  TIẾN HÀNH THANH TOÁN
+                  MUA HÀNG
                 </button>
               </div>
             </div>
@@ -272,6 +277,7 @@ const handldeDelete = async (id) => {
   try {
     const response = await cartService.delete(id);
     fetchCartData();
+    await cartStore.fetchCartCount();
   } catch (error) {
     console.log(error.response);
   }

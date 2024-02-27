@@ -11,7 +11,6 @@ class CartService {
   async create(data) {
     return (await this.api.post("/", data)).data;
   }
-
   async delete(id) {
     return (await this.api.delete(`${id}`)).data;
   }
@@ -23,6 +22,9 @@ class CartService {
   }
   async count(id) {
     return (await this.api.get(`/user/count`)).data;
+  }
+  async deleteAll() {
+    return (await this.api.delete("/user/all")).data;
   }
 }
 

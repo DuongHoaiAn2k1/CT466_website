@@ -53,6 +53,11 @@ const routes = [
     name: "payment",
     component: () => import("@/views/Payment.vue"),
   },
+  {
+    path: "/order-detail/:id",
+    name: "order-detail",
+    component: () => import("@/views/OrderDetail.vue"),
+  },
 ];
 
 const router = createRouter({

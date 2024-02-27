@@ -9,9 +9,22 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderDetailController extends Controller
 {
-    public function get()
+    public function get($order_id)
     {
-        return 'Order detail';
+        try {
+            $order = OrderDetail::where('order_id', $order_id)->get();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Get order detail successfully',
+                'data' => $order
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function create(Request $request)
@@ -19,7 +32,6 @@ class OrderDetailController extends Controller
         try {
             $customMessage = [
                 'quantity.required' => 'Số lượng không được để trống.',
-                'total_price.required' => 'Tổng tiền không được để trống.',
                 'order_id' => 'Mã đơn hàng không được để trống.',
                 'product_id' => 'Id sản phẩm không được để trống.'
 
@@ -27,7 +39,7 @@ class OrderDetailController extends Controller
 
             $validate = Validator::make($request->all(), [
                 'quantity' => 'required',
-                'total_price' => 'required',
+                'product_id' => 'required',
                 'order_id' => 'required'
             ], $customMessage);
 
@@ -41,7 +53,6 @@ class OrderDetailController extends Controller
             } else {
                 $orderDetail = new OrderDetail();
                 $orderDetail->quantity = $request->quantity;
-                $orderDetail->total_price = $request->total_price;
                 $orderDetail->order_id = $request->order_id;
                 $orderDetail->product_id = $request->product_id;
                 $orderDetail->save();

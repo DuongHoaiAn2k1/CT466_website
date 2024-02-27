@@ -85,10 +85,10 @@
                 <i class="bx bxs-star text-warning"></i>
                 <i class="bx bxs-star-half text-warning"></i>
               </p>
-              <!-- <div>
-                <span class="product_saved">You Saved:</span>
-                <span style="color: black">₹ 2,000</span>
-              </div> -->
+              <div>
+                <span class="product_saved">Khối lượng:</span>
+                <span style="color: black">1kg</span>
+              </div>
               <hr class="singleline" />
               <div>
                 <p

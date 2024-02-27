@@ -2,7 +2,7 @@
   <div class="container mt-1">
     <div class="row">
       <div class="col-xl-8">
-        <div class="card">
+        <div class="">
           <div class="card-body pb-0">
             <div class="row align-items-center">
               <div class="col-md-3">
@@ -48,7 +48,7 @@
                           </tr>
                           <tr>
                             <th scope="row">Điểm tích lũy</th>
-                            <td>10</td>
+                            <td>{{ userData.point }}</td>
                           </tr>
                           <!-- end tr -->
                         </tbody>
@@ -66,131 +66,163 @@
           <!-- end card body -->
         </div>
         <hr />
-        <div class="card">
-          <div class="tab-content">
+        <div class="contain-list-order">
+          <div class="tab-content contain-list-order-child">
             <div class="tab-pane active show" id="tasks-tab" role="tabpanel">
               <h4 class="card-title mb-4">Đơn hàng của bạn</h4>
+              <el-scrollbar height="400px">
+                <div
+                  class="row order-item"
+                  v-for="data in listOrder"
+                  :key="data.order_id"
+                >
+                  <div class="col-xl-12">
+                    <div class="task-list-box" id="comp-task">
+                      <div id="task-item-4">
+                        <div class="task-box rounded-3">
+                          <div class="card-body">
+                            <div class="row align-item-center">
+                              <div class="col-xl-6 col-sm-5">Mã đơn hàng:</div>
+                            </div>
+                            <div class="row align-items-center">
+                              <div class="col-2">
+                                <div class="font-size-15">
+                                  <label
+                                    class="form-check-label task-title"
+                                    for="customChat"
+                                    >#{{ data.bill_id }}</label
+                                  >
+                                </div>
+                              </div>
+                              <!-- end col -->
+                              <div class="col-10">
+                                <div class="row align-items-center">
+                                  <div class="col-2">
+                                    <div
+                                      class="avatar-group mt-3 mt-xl-0 task-assigne"
+                                    >
+                                      <div class="avatar-group-item">
+                                        <a
+                                          href="javascript: void(0);"
+                                          class="d-inline-block"
+                                          data-bs-toggle="tooltip"
+                                          data-bs-placement="top"
+                                          value="member-3"
+                                          aria-label="Annmarie Paul"
+                                          data-bs-original-title="Annmarie Paul"
+                                        >
+                                          <img
+                                            :src="
+                                              'http://127.0.0.1:8000/storage/' +
+                                              JSON.parse(
+                                                data.order_detail[0].product
+                                                  .product_img
+                                              )[0]
+                                            "
+                                            alt=""
+                                            class="rounded-circle avatar-sm"
+                                          />
+                                        </a>
+                                      </div>
+                                    </div>
+                                    <!-- end avatar group -->
+                                  </div>
 
-              <div class="row">
-                <div class="col-xl-12">
-                  <div class="task-list-box" id="comp-task">
-                    <div id="task-item-4">
-                      <div class="card task-box rounded-3">
-                        <div class="card-body">
-                          <div class="row align-items-center">
-                            <div class="col-xl-6 col-sm-5">
-                              <div class="checklist form-check font-size-15">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="customChat"
-                                  checked=""
-                                />
-                                <label
-                                  class="form-check-label ms-1 task-title"
-                                  for="customChat"
-                                  >Chat App Pages</label
-                                >
-                              </div>
-                            </div>
-                            <!-- end col -->
-                            <div class="col-xl-6 col-sm-7">
-                              <div class="row align-items-center">
-                                <div class="col-xl-5 col-md-6 col-sm-5">
-                                  <div
-                                    class="avatar-group mt-3 mt-xl-0 task-assigne"
-                                  >
-                                    <div class="avatar-group-item">
-                                      <a
-                                        href="javascript: void(0);"
-                                        class="d-inline-block"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        value="member-3"
-                                        aria-label="Annmarie Paul"
-                                        data-bs-original-title="Annmarie Paul"
-                                      >
-                                        <img
-                                          src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                          alt=""
-                                          class="rounded-circle avatar-sm"
-                                        />
-                                      </a>
+                                  <div class="col-2">
+                                    {{ formatCurrency(data.total_cost) }}
+                                  </div>
+                                  <div class="col-4">
+                                    {{ covertTime(data.created_at) }}
+                                  </div>
+                                  <!-- end col -->
+                                  <div class="col-2">
+                                    <div
+                                      class="d-flex flex-wrap gap-3 mt-3 mt-xl-0 justify-content-md-end"
+                                    >
+                                      <div>
+                                        <span
+                                          v-show="data.status == '1'"
+                                          class="badge rounded-pill yellow font-size-11 task-status"
+                                          >Đang chuẩn bị</span
+                                        >
+                                        <span
+                                          v-show="data.status == '2'"
+                                          class="badge rounded-pill orange font-size-11 task-status"
+                                          >Đang giao</span
+                                        >
+                                        <span
+                                          v-show="data.status == '3'"
+                                          class="badge rounded-pill text-success font-size-11 task-status"
+                                          >Đã giao</span
+                                        >
+                                        <span
+                                          v-show="data.status == '0'"
+                                          class="badge rounded-pill red font-size-11 task-status"
+                                          >Đã hủy</span
+                                        >
+                                      </div>
+
+                                      <div>
+                                        <a
+                                          href="#"
+                                          class="mb-0 text-muted fw-medium"
+                                          data-bs-toggle="modal"
+                                          data-bs-target=".bs-example-new-task"
+                                          ><i
+                                            class="mdi mdi-square-edit-outline font-size-16 align-middle"
+                                            onclick="editTask('task-item-4')"
+                                          ></i
+                                        ></a>
+                                      </div>
+                                      <div>
+                                        <a
+                                          href="#"
+                                          class="delete-item"
+                                          onclick="deleteProjects('task-item-4')"
+                                        >
+                                          <i
+                                            class="mdi mdi-trash-can-outline font-size-16 align-middle text-danger"
+                                          ></i>
+                                        </a>
+                                      </div>
                                     </div>
                                   </div>
-                                  <!-- end avatar group -->
-                                </div>
-                                <!-- end col -->
-                                <div class="col-xl-7 col-md-6 col-sm-7">
-                                  <div
-                                    class="d-flex flex-wrap gap-3 mt-3 mt-xl-0 justify-content-md-end"
-                                  >
-                                    <div>
-                                      <span
-                                        class="badge rounded-pill badge-soft-success font-size-11 task-status"
-                                        >Completed</span
-                                      >
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="mb-0 text-muted fw-medium"
-                                        ><i
-                                          class="mdi mdi-checkbox-marked-circle-outline me-1"
-                                        ></i
-                                        >3/3
-                                      </a>
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="mb-0 text-muted fw-medium"
-                                        data-bs-toggle="modal"
-                                        data-bs-target=".bs-example-new-task"
-                                        ><i
-                                          class="mdi mdi-square-edit-outline font-size-16 align-middle"
-                                          onclick="editTask('task-item-4')"
-                                        ></i
-                                      ></a>
-                                    </div>
-                                    <div>
-                                      <a
-                                        href="#"
-                                        class="delete-item"
-                                        onclick="deleteProjects('task-item-4')"
-                                      >
-                                        <i
-                                          class="mdi mdi-trash-can-outline font-size-16 align-middle text-danger"
-                                        ></i>
-                                      </a>
-                                    </div>
+
+                                  <div class="col-2">
+                                    <router-link
+                                      :to="{
+                                        name: 'order-detail',
+                                        params: { id: data.order_id },
+                                      }"
+                                      >Xem chi tiết</router-link
+                                    >
                                   </div>
+                                  <!-- end col -->
                                 </div>
-                                <!-- end col -->
+                                <!-- end row -->
                               </div>
-                              <!-- end row -->
+                              <!-- end col -->
                             </div>
-                            <!-- end col -->
+                            <!-- end row -->
                           </div>
-                          <!-- end row -->
+                          <!-- end cardbody -->
                         </div>
-                        <!-- end cardbody -->
+                        <!-- end card -->
                       </div>
-                      <!-- end card -->
                     </div>
                   </div>
                 </div>
-              </div>
+              </el-scrollbar>
             </div>
           </div>
         </div>
       </div>
 
       <div class="col-xl-4">
-        <div class="card">
-          <div class="card-body">
+        <div class="">
+          <div class="">
             <div>
-              <h4 class="card-title mb-4">Địa chỉ của bạn</h4>
+              <h4 class="mb-4">Địa chỉ của bạn</h4>
               <div
                 class="d-flex flex-column flex-md-row align-items-center justify-content-center"
               >
@@ -394,7 +426,7 @@
           </div>
         </div>
         <!-- End Model -->
-        <div class="card">
+        <div class="">
           <div class="card-body">
             <div>
               <h4 class="card-title mb-4">Quản lý tài khoản</h4>
@@ -436,6 +468,8 @@ import { useAuthStore } from "@/stores/auth";
 import addressData from "@/assets/address/dvhc.json";
 import { compose } from "element-plus/es/components/table/src/util";
 import { ElLoading, ElMessage } from "element-plus";
+import orderService from "@/services/order.service";
+import productService from "@/services/product.service";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Họ và tên không được để trống"),
@@ -461,11 +495,15 @@ const addressInfoData = reactive({
   commue: "",
   address: "",
 });
+
+const listOrder = ref([]);
+
 const cityAddress = ref(0);
 const districtAddress = ref(0);
 const commueAddress = ref(0);
 const listDistrict = ref([]);
 const listCommune = ref([]);
+const listProduct = ref([]);
 
 const fetchUserData = async () => {
   try {
@@ -475,6 +513,26 @@ const fetchUserData = async () => {
     userData.value = response.data;
     console.log(response.data.address);
     listAddressUser.value = JSON.parse(response.data.address);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const fetchListOrder = async () => {
+  try {
+    const response = await orderService.getByUser();
+    listOrder.value = response.data;
+    console.log("List order: ", response);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const fetchListProduct = async () => {
+  try {
+    const response = await productService.getAll();
+    listProduct.value = response.listProduct;
+    console.log("List product: ", response);
   } catch (error) {
     console.log(error.response);
   }
@@ -582,12 +640,39 @@ const handleDeteleAddress = async (index) => {
   }
 };
 
+const handleFetchCartCount = async () => {
+  try {
+    await cartStore.fetchCartCount();
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
 onMounted(() => {
+  handleFetchCartCount();
   fetchUserData();
+  fetchListOrder();
+  fetchListProduct();
 
   // console.log("GET: ", getDataDistric("01")[0].name);
 });
 
+const formatCurrency = (amount) => {
+  return (
+    amount?.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }) || ""
+  );
+};
+
+const covertTime = (dateTimeString) => {
+  var dateTime = moment(dateTimeString);
+  dateTime.utcOffset(7);
+
+  var formattedDateTime = dateTime.format("DD/MM/YYYY HH:mm:ss");
+  return formattedDateTime;
+};
 watchEffect(() => {
   if (cityAddress.value != 0) {
     const district = getDataDistric(cityAddress.value);
@@ -612,6 +697,22 @@ watchEffect(() => {
 </script>
 
 <style>
+.yellow {
+  color: yellow;
+}
+
+.primary-orange {
+  color: #ffe599;
+}
+
+.orange {
+  color: #ffa500;
+}
+
+.red {
+  color: #c81f30;
+}
+
 .border-none {
   border: none;
 }
@@ -802,5 +903,18 @@ watchEffect(() => {
   top: 3px;
   background-color: #fff;
   border: 2px solid #038edc;
+}
+
+/* My design */
+.contain-list-order {
+  border-style: groove;
+}
+
+.contain-list-order-child {
+  padding: 8px;
+}
+
+.order-item {
+  border-style: ridge;
 }
 </style>

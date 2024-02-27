@@ -48,12 +48,12 @@
               </router-link>
             </nav>
           </div>
-          <a class="nav-link" href="tables.html">
+          <router-link class="nav-link collapsed" :to="{ name: 'customer' }">
             <div class="sb-nav-link-icon">
               <i class="fa-solid fa-users"></i>
             </div>
             KHÁCH HÀNG
-          </a>
+          </router-link>
           <a class="nav-link" href="tables.html">
             <div class="sb-nav-link-icon">
               <i class="fa-solid fa-clipboard"></i>

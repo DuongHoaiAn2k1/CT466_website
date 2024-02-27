@@ -149,7 +149,7 @@ class AuthController extends Controller
         $data = [
             'sub' => auth()->user()->id,
             'random' => rand() . time(),
-            'exp' => time() + config('jwt.refresh_ttl')
+            'exp' => time() +  2880
         ];
 
         $refreshToken = JWTAuth::getJWTProvider()->encode($data);

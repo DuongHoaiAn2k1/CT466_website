@@ -156,4 +156,21 @@ class CartController extends Controller
             ], 500);
         }
     }
+
+    public function delete_by_user_id()
+    {
+        try {
+            $user_id = auth()->user()->id;
+            Cart::where('user_id', $user_id)->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Delete All successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

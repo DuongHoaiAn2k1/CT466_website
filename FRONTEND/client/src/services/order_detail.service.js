@@ -5,8 +5,8 @@ class OrderDetailService {
     this.api = createApiClient(baseUrl);
   }
 
-  async get() {
-    return (await this.api.get("")).data;
+  async get(id) {
+    return (await this.api.get(`/${id}`)).data;
   }
 
   async create(data) {

@@ -11,11 +11,9 @@ class OrderService {
   async getByUser() {
     return (await this.api.get("/user/get")).data;
   }
-
   async getByUserId(id) {
     return (await this.api.get(`/user/${id}`)).data;
   }
-
   async getAll() {
     return (await this.api.get("/getAll")).data;
   }

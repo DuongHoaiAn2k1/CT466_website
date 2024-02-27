@@ -40,13 +40,15 @@ Route::group([
 });
 
 Route::prefix('user')->group(function () {
-    Route::get('/', function () {
-        return 'cc';
-    });
+    Route::get('/', [UserController::class, 'getAll'])->middleware(JWTMiddlewate::class);
     Route::get('/{id}', [UserController::class, 'index'])->middleware(JWTMiddlewate::class);
     Route::post('/register', [UserController::class, 'register']);
     Route::patch('/address', [UserController::class, 'createAddress']);
     Route::delete('/address/{index}', [UserController::class, 'deleteAddress']);
+    Route::patch('/point/increase', [UserController::class, 'incrementPoint']);
+    Route::patch('/point/decrease', [UserController::class, 'decrementPoint']);
+    Route::get('/point/get', [UserController::class, 'getCurrentPoint']);
+    Route::patch('/point/restore', [UserController::class, 'restorePoint']);
     // Route::post('/login', [UserController::class, 'login']);
     // Route::post('/logout', 'App\Http\Controllers\UserController@logout');
 });
@@ -82,17 +84,21 @@ Route::prefix('/cart')->group(function () {
     Route::patch('/decrease/{id}', [CartController::class, 'decrease']);
     Route::patch('/increase/{id}', [CartController::class, 'increase']);
     Route::delete('/{id}', [CartController::class, 'delete']);
+    Route::delete('/user/all', [CartController::class, 'delete_by_user_id']);
 });
 
 Route::prefix('/order')->group(function () {
-    Route::get('/', [OrderController::class, 'get']);
-    Route::get('/getAll', [OrderController::class, 'getAll']);
+    Route::get('/{id}', [OrderController::class, 'get']);
+    Route::get('/user/get',  [OrderController::class, 'get_by_user']);
+    Route::get('/user/{id}', [OrderController::class, 'get_by_user_id']);
+    Route::get('/get/all', [OrderController::class, 'getAll']);
     Route::post('/', [OrderController::class, 'create']);
     Route::delete('/{id}', [OrderController::class, 'delete']);
-    Route::get('/count', [OrderController::class, 'count']);
+    Route::get('/count/order', [OrderController::class, 'count']);
+    Route::patch('/{id}', [OrderController::class, 'cancel']);
 });
 
 Route::prefix('/orderDetail')->group(function () {
-    Route::get('/', [OrderDetailController::class, 'get']);
+    Route::get('/{id}', [OrderDetailController::class, 'get']);
     Route::post('/', [OrderDetailController::class, 'create']);
 });

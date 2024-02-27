@@ -36,6 +36,30 @@ class UserController extends Controller
         }
     }
 
+    public function getAll()
+    {
+        try {
+            $role = auth()->user()->roles;
+            if ($role != 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Quyền này không thuộc về bạn'
+                ], 500);
+            }
+            $users = User::all();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Lấy danh sách người dùng thành công',
+                'data' => $users,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -102,6 +126,7 @@ class UserController extends Controller
                             $user->phone = $request->phone;
                             // $user->address = json_encode($request->address);
                             $user->roles = 1;
+                            $user->point = 0;
                             $user->save();
                             return response()->json([
                                 'status' => 'success',
@@ -256,33 +281,84 @@ class UserController extends Controller
         }
     }
 
-
-
-
-
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function incrementPoint()
     {
-        //
+        try {
+            $user_id = auth()->user()->id;
+            $user = User::where('id', $user_id)->first();
+            $user->point = $user->point + 10;
+            $user->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Point Increased Successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function decrementPoint(Request $request)
     {
-        //
+        try {
+            $user_id = auth()->user()->id;
+            $user = User::where('id', $user_id)->first();
+            $point_used = $request->point_used;
+
+            $user->point = $user->point - $point_used;
+            $user->point_used = $user->point_used + $point_used;
+            $user->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Point Updated Successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function restorePoint(Request $request)
     {
-        //
+        try {
+            $user_id = auth()->user()->id;
+            $user = User::where('id', $user_id)->first();
+            $point_paid = $request->point_paid;
+            $user->point_used = $user->point_used - $point_paid;
+            $user->point = $user->point + $point_paid;
+            $user->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Restore successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getCurrentPoint()
+    {
+        try {
+            $user_id = auth()->user()->id;
+            $user = User::where('id', $user_id)->first();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Get Current Point SuccessFully',
+                'point' => $user->point,
+                'used_point' => $user->point_used
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

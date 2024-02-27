@@ -24,6 +24,18 @@ class UserService {
   async deleteAddress(index) {
     return (await this.api.delete(`/address/${index}`)).data;
   }
+  async pointIncrement() {
+    return (await this.api.patch("/point/increase")).data;
+  }
+  async pointDecrement(data) {
+    return (await this.api.patch("/point/decrease", data)).data;
+  }
+  async getCurrentPoint() {
+    return (await this.api.get("/point/get")).data;
+  }
+  async restorePointPaid(data) {
+    return (await this.api.patch("/point/restore", data)).data;
+  }
 }
 
 export default new UserService();

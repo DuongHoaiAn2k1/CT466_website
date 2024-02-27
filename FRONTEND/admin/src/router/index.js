@@ -93,6 +93,21 @@ const routes = [
       }
     },
   },
+
+  {
+    path: "/customer",
+    name: "customer",
+    component: () => import("@/views/Customer.vue"),
+    beforeEnter: (to, from, next) => {
+      const authStore = useAuthStore();
+      if (authStore.isAdminLoggedIn) {
+        next();
+      } else {
+        next({ name: "login" });
+        showWarning();
+      }
+    },
+  },
 ];
 
 const showWarning = () => {
