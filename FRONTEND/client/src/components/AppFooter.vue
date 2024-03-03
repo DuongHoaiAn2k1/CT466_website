@@ -99,3 +99,5 @@
     <!-- Copyright -->
   </footer>
 </template>
+
+<script setup></script>

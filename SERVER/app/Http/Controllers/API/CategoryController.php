@@ -13,10 +13,12 @@ class CategoryController extends Controller
     {
         try {
             $listCategory = Category::get();
+            $dataLength = count($listCategory);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Lấy toàn bộ danh mục thành công',
-                'listCategory' => $listCategory
+                'listCategory' => $listCategory,
+                'length' => $dataLength
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

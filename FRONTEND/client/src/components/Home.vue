@@ -41,11 +41,7 @@
   <div class="container bg-trasparent mt-2" style="position: relative">
     <p style="margin-bottom: 0px; font-weight: 600">KHÔ CÁ CÀ MAU</p>
     <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-5 g-3">
-      <div
-        class="col hp"
-        v-for="product in fishList.value"
-        :key="product.product_id"
-      >
+      <div class="col hp" v-for="product in fishList" :key="product.product_id">
         <div class="card h-100 shadow-sm">
           <router-link
             :to="{ name: 'product-detail', params: { id: product.product_id } }"
@@ -82,9 +78,23 @@
               >
             </div>
             <div class="clearfix mt-1">
-              <span class="float-end">
+              <span
+                class="float-end"
+                v-show="!product.liked"
+                @click="createFavorite(product.product_id)"
+              >
                 <i
                   class="fa-regular fa-heart"
+                  style="cursor: pointer; font-size: 24px"
+                ></i>
+              </span>
+              <span
+                class="float-end"
+                v-show="product.liked"
+                @click="deleteFavorite(product.product_id)"
+              >
+                <i
+                  class="fa-solid fa-heart"
                   style="cursor: pointer; font-size: 24px"
                 ></i>
               </span>
@@ -100,7 +110,7 @@
     <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-5 g-3">
       <div
         class="col hp"
-        v-for="product in shrimpList.value"
+        v-for="product in shrimpList"
         :key="product.product_id"
       >
         <div class="card h-100 shadow-sm">
@@ -130,12 +140,30 @@
             </h5>
 
             <div class="d-grid gap-2">
-              <a href="#" class="btn btn-warning bold-btn">Thêm</a>
+              <a
+                @click="addToCart(product.product_id)"
+                class="btn btn-warning bold-btn"
+                >Thêm</a
+              >
             </div>
             <div class="clearfix mt-1">
-              <span class="float-end">
+              <span
+                class="float-end"
+                v-show="!product.liked"
+                @click="createFavorite(product.product_id)"
+              >
                 <i
                   class="fa-regular fa-heart"
+                  style="cursor: pointer; font-size: 24px"
+                ></i>
+              </span>
+              <span
+                class="float-end"
+                v-show="product.liked"
+                @click="deleteFavorite(product.product_id)"
+              >
+                <i
+                  class="fa-solid fa-heart"
                   style="cursor: pointer; font-size: 24px"
                 ></i>
               </span>
@@ -150,6 +178,7 @@
 <script setup>
 import "../assets/card.css";
 import categoryService from "@/services/category.service";
+import favoriteService from "@/services/favorite.service";
 import productService from "@/services/product.service";
 import { onMounted, reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
@@ -161,10 +190,17 @@ const router = useRouter();
 const cartStore = useCartStore();
 const authStore = useAuthStore();
 const listCategory = reactive({});
-
+const listFavorite = ref([]);
 const listProduct = reactive({});
-const fishList = reactive({});
-const shrimpList = reactive({});
+const fishList = ref([]);
+const shrimpList = ref([]);
+
+const showSuccess = (message) => {
+  ElMessage({
+    message: message,
+    type: "success",
+  });
+};
 const addToCartSuccess = () => {
   ElMessage({
     message: "Thêm vào giỏ hàng thành công",
@@ -222,10 +258,72 @@ const fetchListProduct = async () => {
   }
 };
 
+const fetchListFavorite = async () => {
+  try {
+    const response = await favoriteService.getByUser();
+    listFavorite.value = response.data;
+    console.log("List favorite: ", response);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+const deleteFavorite = async (productId) => {
+  // console.log(productId);
+  try {
+    const response = await favoriteService.delete(productId);
+    fetchListFavorite();
+    showSuccess("Đã loại bỏ khỏi danh sách yêu thích");
+    setTimeout(() => {
+      updateFishListWithLikes();
+      updateShrimpListWithLikes();
+    }, 1000);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const createFavorite = async (productId) => {
+  try {
+    const response = await favoriteService.create({ product_id: productId });
+    fetchListFavorite();
+    showSuccess("Thêm vào danh sách yêu thích thành công");
+    setTimeout(() => {
+      updateFishListWithLikes();
+      updateShrimpListWithLikes();
+    }, 1000);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+const updateFishListWithLikes = () => {
+  fishList.value.forEach((product) => {
+    const isLiked = listFavorite.value.some(
+      (favorite) => favorite.product_id === product.product_id
+    );
+    product.liked = isLiked;
+  });
+};
+
+const updateShrimpListWithLikes = () => {
+  shrimpList.value.forEach((product) => {
+    const isLiked = listFavorite.value.some(
+      (favorite) => favorite.product_id === product.product_id
+    );
+    product.liked = isLiked;
+  });
+};
+
 onMounted(() => {
   fetchListCategory();
   fetchListProduct();
   fetchList();
+  fetchListFavorite();
+  cartStore.fetchCartCount();
+  setTimeout(() => {
+    updateFishListWithLikes();
+    updateShrimpListWithLikes();
+    console.log(fishList);
+  }, 3000);
 });
 const addToCart = async (product_id) => {
   if (authStore.isUserLoggedIn) {
@@ -264,6 +362,9 @@ const formatCurrency = (amount) => {
 </script>
 
 <style scoped>
+.design-heart-red {
+  background-color: red;
+}
 nav {
   background-color: #fff;
   color: #fff;

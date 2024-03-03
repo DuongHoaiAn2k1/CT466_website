@@ -152,7 +152,6 @@ class CartController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage()
             ], 500);
         }
     }

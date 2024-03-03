@@ -281,7 +281,7 @@ const formatCurrency = (amount) => {
   margin-top: 0px;
 }
 
-.badge {
+/* .badge {
   display: inline-block;
   padding: 0.5em 0.4em;
   font-size: 75%;
@@ -291,7 +291,7 @@ const formatCurrency = (amount) => {
   white-space: nowrap;
   vertical-align: baseline;
   border-radius: 0.25rem;
-}
+} */
 
 .product-rating {
   margin-top: 10px;

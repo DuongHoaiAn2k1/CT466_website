@@ -87,7 +87,6 @@
                 type="text"
                 class="search form-control form-design"
                 placeholder="Nhập từ khóa tìm kiếm"
-                @change="handleSearch"
                 v-model="search"
               />
             </div>
@@ -128,8 +127,8 @@
                       width="50px"
                     />
                   </td>
-                  <td>{{ category.created_at }}</td>
-                  <td>{{ category.updated_at }}</td>
+                  <td>{{ convertTime(category.created_at) }}</td>
+                  <td>{{ convertTime(category.updated_at) }}</td>
                   <td>
                     <button
                       type="button"
@@ -176,6 +175,17 @@
                 </tr>
               </tbody>
             </table>
+            <div class="text-end">
+              <el-pagination
+                v-model:current-page="currentPage"
+                @current-change="handleCurrentChange"
+                small
+                background
+                layout="prev, pager, next"
+                :total="Math.ceil(categoryLength / pageSize) * 10"
+                class="mt-4"
+              />
+            </div>
             <div v-show="datasearch.length == 0">
               <p class="text-center">Không có sản phẩm nào</p>
             </div>
@@ -192,6 +202,9 @@ import * as Yup from "yup";
 import { ElLoading, ElNotification } from "element-plus";
 import { InfoFilled } from "@element-plus/icons-vue";
 
+const currentPage = ref(1);
+const pageSize = 8;
+const categoryLength = ref(0);
 const confirmEvent = () => {
   console.log("confirm!");
 };
@@ -239,7 +252,8 @@ const fetchListCategory = async () => {
   try {
     const response = await categoryService.getAll();
     listCategory.value = response.listCategory;
-    console.log(listCategory.value.listCategory);
+    categoryLength.value = response.length;
+    console.log(response);
   } catch (error) {
     console.log(error);
   }
@@ -249,16 +263,11 @@ onMounted(() => {
   fetchListCategory();
 });
 
-const handleSearch = () => {
-  // console.log(search.value);
-  console.log("cc :", datasearch.value);
-};
-
 const datasearch = computed(() => {
   const dataSearch = String(search.value).trim();
-
+  const startIndex = (currentPage.value - 1) * pageSize;
   if (!dataSearch) {
-    return listCategory.value;
+    return listCategory.value.slice(startIndex, startIndex + pageSize);
   }
 
   return listCategory.value.filter((data) => {
@@ -276,7 +285,17 @@ const handleEdit = (index) => {
     editingIndex.value = index;
   }
 };
-
+//Fucntion update category
+const updateCategory = async (category_id, data) => {
+  try {
+    const response = await categoryService.update(category_id, data);
+    console.log(response);
+    showSuccess("Cập nhật danh mục thành công");
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+// Hanlde update category
 const handleUpdate = (category) => {
   console.log(category.category_name);
   const loading = ElLoading.service({
@@ -291,6 +310,8 @@ const handleUpdate = (category) => {
     fetchListCategory();
   }, 2000);
 };
+
+// Function create category
 const createCategory = async (data) => {
   try {
     const response = await categoryService.create(data);
@@ -304,16 +325,7 @@ const createCategory = async (data) => {
   }
 };
 
-const updateCategory = async (category_id, data) => {
-  try {
-    const response = await categoryService.update(category_id, data);
-    console.log(response);
-    showSuccess("Cập nhật danh mục thành công");
-  } catch (error) {
-    console.log(error.response);
-  }
-};
-
+// Function delete category
 const deleteCategory = async (category_id) => {
   try {
     const response = await categoryService.delete(category_id);
@@ -324,6 +336,7 @@ const deleteCategory = async (category_id) => {
   }
 };
 
+//Hanlde delete category
 const handleDelete = (category_id) => {
   const loading = ElLoading.service({
     lock: true,
@@ -339,6 +352,8 @@ const handleDelete = (category_id) => {
 };
 const categoryNameError = ref(null);
 const categoryImgError = ref(null);
+
+// Hanlde create new category
 const submitCreate = async (event) => {
   event.preventDefault();
   categoryNameError.value = null;
@@ -383,6 +398,21 @@ const submitCreate = async (event) => {
       });
     });
   // console.log(dataCreate.category_name);
+};
+
+const convertTime = (dateTimeString) => {
+  var dateTime = moment(dateTimeString);
+  dateTime.utcOffset(7);
+
+  var formattedDateTime = dateTime.format("DD/MM/YYYY HH:mm:ss");
+  return formattedDateTime;
+};
+
+// Proccess pagination
+
+const handleCurrentChange = (val) => {
+  currentPage.value = val;
+  console.log(`current page: ${val}`);
 };
 </script>
 

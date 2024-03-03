@@ -205,6 +205,7 @@ const handleLogOut = async () => {
   try {
     const response = await authService.logout();
     authStore.logout();
+    cartStore.deleteCart();
     showLogoutSuccess();
     setTimeout(() => {
       router.push({ name: "login" });
@@ -241,7 +242,7 @@ watchEffect(() => {
 });
 </script>
 
-<style scoped>
+<style>
 .logo {
   width: 180px;
   height: 80px;

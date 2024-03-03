@@ -15,10 +15,12 @@ class ProductController extends Controller
     {
         try {
             $listProduct = Product::get();
+            $dataLength = count($listProduct);
             return response()->json([
                 'status' => 'success',
                 'message' => ' Lấy danh sách sản phẩm thành công',
-                'listProduct' => $listProduct
+                'listProduct' => $listProduct,
+                'length' => $dataLength
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

@@ -9,8 +9,10 @@ use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\FavoriteController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderDetailController;
+use App\Models\Favorite;
 use App\Models\Order;
 
 /*
@@ -96,9 +98,18 @@ Route::prefix('/order')->group(function () {
     Route::delete('/{id}', [OrderController::class, 'delete']);
     Route::get('/count/order', [OrderController::class, 'count']);
     Route::patch('/{id}', [OrderController::class, 'cancel']);
+    Route::patch('update/{id}', [OrderController::class, 'update_status']);
 });
 
 Route::prefix('/orderDetail')->group(function () {
     Route::get('/{id}', [OrderDetailController::class, 'get']);
     Route::post('/', [OrderDetailController::class, 'create']);
+});
+
+
+Route::prefix('/favorite')->group(function () {
+    Route::post('/', [FavoriteController::class, 'create']);
+    Route::get('/', [FavoriteController::class, 'get_by_user']);
+    Route::get('/all', [FavoriteController::class, 'get_all']);
+    Route::delete('/{id}', [FavoriteController::class, 'delete']);
 });

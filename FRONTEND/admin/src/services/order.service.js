@@ -15,7 +15,7 @@ class OrderService {
     return (await this.api.get(`/user/${id}`)).data;
   }
   async getAll() {
-    return (await this.api.get("/getAll")).data;
+    return (await this.api.get("/get/all")).data;
   }
 
   async create(data) {
@@ -29,6 +29,10 @@ class OrderService {
   }
   async cancel(id) {
     return (await this.api.patch(`/${id}`)).data;
+  }
+
+  async updateStatus(data, id) {
+    return (await this.api.patch(`/update/${id}`, data)).data;
   }
 }
 

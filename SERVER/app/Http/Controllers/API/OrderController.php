@@ -65,10 +65,12 @@ class OrderController extends Controller
     public function getAll()
     {
         try {
-            $orders = Order::orderBy('created_at', 'desc')->get();
+            $orders = Order::with('orderDetail.product')->orderBy('created_at', 'desc')->get();
+            $dataLength = count($orders);
             return response()->json([
                 'message' => 'success',
-                'data' => $orders
+                'data' => $orders,
+                'length' => $dataLength
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -192,6 +194,34 @@ class OrderController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Hủy đơn hàng thành công',
+                'data' => $order
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function update_status(Request $request, $order_id)
+    {
+        try {
+            $order = Order::where('order_id', $order_id)->first();
+
+            if (!$order) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Đơn hàng không tồn tại'
+                ], 404);
+            }
+
+            $order->status = $request->status;
+            $order->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Cập nhật trạng thái đơn hàng thành công',
                 'data' => $order
             ], 200);
         } catch (\Exception $e) {

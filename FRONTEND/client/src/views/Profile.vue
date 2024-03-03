@@ -142,7 +142,7 @@
                                       <div>
                                         <span
                                           v-show="data.status == '1'"
-                                          class="badge rounded-pill yellow font-size-11 task-status"
+                                          class="badge rounded-pill text-info font-size-11 task-status"
                                           >Đang chuẩn bị</span
                                         >
                                         <span
@@ -227,31 +227,32 @@
                 class="d-flex flex-column flex-md-row align-items-center justify-content-center"
               >
                 <div class="list-group">
-                  <a
-                    v-for="(data, index) in listAddressUser"
-                    class="list-group-item d-flex gap-3 py-3"
-                  >
-                    <i class="fa-solid fa-location-dot"></i>
-                    <div class="d-flex gap-2 w-100 justify-content-between">
-                      <div>
-                        <h6 class="mb-0">Địa chỉ {{ index + 1 }}</h6>
-                        <p class="mb-0 opacity-75">
-                          {{ data.address }} {{ data.commue }}
-                          {{ data.district }} {{ data.city }} -
-                          {{ data.name }} - {{ data.phone }}
-                        </p>
+                  <el-scrollbar height="230px">
+                    <a
+                      v-for="(data, index) in listAddressUser"
+                      class="list-group-item d-flex gap-3 py-3"
+                    >
+                      <i class="fa-solid fa-location-dot"></i>
+                      <div class="d-flex gap-2 w-100 justify-content-between">
+                        <div>
+                          <h6 class="mb-0">Địa chỉ {{ index + 1 }}</h6>
+                          <p class="mb-0 opacity-75">
+                            {{ data.address }} {{ data.commue }}
+                            {{ data.district }} {{ data.city }} -
+                            {{ data.name }} - {{ data.phone }}
+                          </p>
+                        </div>
+                        <small class="opacity-50 text-nowrap mt-4"
+                          ><button
+                            class="border-none"
+                            @click="handleDeteleAddress(index)"
+                          >
+                            <i class="fa-solid fa-trash"></i></button
+                        ></small>
                       </div>
-                      <small class="opacity-50 text-nowrap mt-4"
-                        ><button
-                          class="border-none"
-                          @click="handleDeteleAddress(index)"
-                        >
-                          <i class="fa-solid fa-trash"></i></button
-                      ></small>
-                    </div>
-                    <hr />
-                  </a>
-
+                      <hr />
+                    </a>
+                  </el-scrollbar>
                   <a
                     href="#"
                     class="list-group-item list-group-item-action d-flex gap-3 py-3"
@@ -426,38 +427,124 @@
           </div>
         </div>
         <!-- End Model -->
-        <div class="">
-          <div class="card-body">
-            <div>
-              <h4 class="card-title mb-4">Quản lý tài khoản</h4>
-              <ul class="list-unstyled work-activity mb-0">
-                <li class="work-item" data-date="2020-21">
-                  <h6 class="lh-base mb-0">ABCD Company</h6>
-                  <p class="font-size-13 mb-2">Web Designer</p>
-                  <p>
-                    To achieve this, it would be necessary to have uniform
-                    grammar, and more common words.
-                  </p>
-                </li>
-                <li class="work-item" data-date="2019-20">
-                  <h6 class="lh-base mb-0">XYZ Company</h6>
-                  <p class="font-size-13 mb-2">Graphic Designer</p>
-                  <p class="mb-0">
-                    It will be as simple as occidental in fact, it will be
-                    Occidental person, it will seem like simplified.
-                  </p>
-                </li>
-              </ul>
-              <!-- end ul -->
-            </div>
+        <hr />
+        <div class="mt-1">
+          <div>
+            <h4 class="card-title mb-4">Quản lý tài khoản</h4>
+            <ul class="list-group hover">
+              <li
+                class="list-group-item list-group-item-action my-1"
+                @click="dialogListFavorite = true"
+              >
+                <i class="fa-solid fa-heart"></i>
+                Danh sách sản phẩm yêu thích
+              </li>
+              <li class="list-group-item list-group-item-action my-1">
+                <i class="fa-solid fa-pen-to-square"></i> Cập nhật thông tin tài
+                khoản
+              </li>
+              <li class="list-group-item list-group-item-action my-1">
+                <i class="fa-solid fa-key"></i> Đổi mật khẩu
+              </li>
+              <li class="list-group-item list-group-item-action my-1">
+                <i class="fa-solid fa-trash"></i> Xóa tài khoản
+              </li>
+            </ul>
+            <!-- end ul -->
           </div>
-          <!-- end card-body -->
         </div>
         <!-- end card -->
       </div>
       <!-- end col -->
     </div>
   </div>
+
+  <!-- Content dialog -->
+  <el-dialog
+    v-model="dialogListFavorite"
+    title="Danh sách yêu thích"
+    width="800"
+  >
+    <section class="intro">
+      <div class="gradient-custom-1 h-100">
+        <div class="mask d-flex align-items-center h-100">
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-12">
+                <div class="table-responsive bg-white">
+                  <table class="table mb-0">
+                    <thead>
+                      <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">HÌNH ẢNH</th>
+                        <th scope="col">TÊN SẢN PHẨM</th>
+                        <th scope="col">GIÁ BÁN</th>
+                        <th scope="col">Chi tiết</th>
+                        <th scope="col">Trạng thái</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr
+                        v-for="(data, index) in paginatedList"
+                        :key="data.favorite_id"
+                      >
+                        <th scope="row" style="color: #666666">
+                          {{ index + 1 }}
+                        </th>
+                        <td>
+                          <img
+                            :src="
+                              'http://127.0.0.1:8000/storage/' +
+                              JSON.parse(data.product.product_img)[0]
+                            "
+                            alt=""
+                            width="40px"
+                          />
+                        </td>
+                        <td>{{ data.product.product_name }}</td>
+                        <td>
+                          {{ formatCurrency(data.product.product_price) }}
+                        </td>
+                        <td>
+                          <router-link
+                            :to="{
+                              name: 'product-detail',
+                              params: { id: data.product.product_id },
+                            }"
+                            >Xem chi tiết</router-link
+                          >
+                        </td>
+                        <td>
+                          <div
+                            class="design-heart"
+                            @click="deleteFavorite(data.product.product_id)"
+                          >
+                            <i class="fa-solid fa-heart"></i>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="text-end">
+                    <el-pagination
+                      v-model:current-page="currentPage"
+                      @current-change="handleCurrentChange"
+                      small
+                      background
+                      layout="prev, pager, next"
+                      :total="Math.ceil(favoriteLength / pageSize) * 10"
+                      class="mt-4"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </el-dialog>
 </template>
 
 <script setup>
@@ -470,7 +557,12 @@ import { compose } from "element-plus/es/components/table/src/util";
 import { ElLoading, ElMessage } from "element-plus";
 import orderService from "@/services/order.service";
 import productService from "@/services/product.service";
+import favoriteService from "@/services/favorite.service";
 
+// Dialog var
+const dialogListFavorite = ref(false);
+
+// End
 const schema = Yup.object().shape({
   name: Yup.string().required("Họ và tên không được để trống"),
   phone: Yup.string()
@@ -486,6 +578,9 @@ const schema = Yup.object().shape({
 const authStore = useAuthStore();
 const userData = ref({});
 const listAddressUser = ref([]);
+const currentPage = ref(1);
+const pageSize = 4;
+const favoriteLength = ref(0);
 
 const addressInfoData = reactive({
   name: "",
@@ -504,6 +599,7 @@ const commueAddress = ref(0);
 const listDistrict = ref([]);
 const listCommune = ref([]);
 const listProduct = ref([]);
+const listFavorite = ref([]);
 
 const fetchUserData = async () => {
   try {
@@ -538,6 +634,17 @@ const fetchListProduct = async () => {
   }
 };
 
+const fetchListFavorite = async () => {
+  try {
+    const response = await favoriteService.getByUser();
+    listFavorite.value = response.data;
+    favoriteLength.value = response.length;
+    console.log("List Favorite Product: ", response);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
 const getDataDistric = (id) => {
   return addressData.data.filter((data) => data.level1_id === id);
 };
@@ -554,6 +661,19 @@ const createAddress = async (data) => {
   try {
     const response = await userService.createAddress(data);
     console.log("After create address: ", response);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const deleteFavorite = async (productId) => {
+  try {
+    const response = await favoriteService.delete(productId);
+    fetchListFavorite();
+    showSuccess("Đã loại bỏ khỏi danh sách yêu thích");
+    setTimeout(() => {
+      fetchListFavorite();
+    }, 500);
   } catch (error) {
     console.log(error.response);
   }
@@ -653,6 +773,7 @@ onMounted(() => {
   fetchUserData();
   fetchListOrder();
   fetchListProduct();
+  fetchListFavorite();
 
   // console.log("GET: ", getDataDistric("01")[0].name);
 });
@@ -673,6 +794,7 @@ const covertTime = (dateTimeString) => {
   var formattedDateTime = dateTime.format("DD/MM/YYYY HH:mm:ss");
   return formattedDateTime;
 };
+
 watchEffect(() => {
   if (cityAddress.value != 0) {
     const district = getDataDistric(cityAddress.value);
@@ -693,6 +815,16 @@ watchEffect(() => {
     addressInfoData.district = getDataCommune(districtAddress.value)[0].name;
     addressInfoData.commue = getNameCommune(commueAddress.value)[0].name;
   }
+});
+
+const handleCurrentChange = (val) => {
+  currentPage.value = val;
+  console.log(`current page: ${val}`);
+};
+
+const paginatedList = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize;
+  return listFavorite.value.slice(startIndex, startIndex + pageSize);
 });
 </script>
 
@@ -718,6 +850,13 @@ watchEffect(() => {
 }
 .border-none:hover {
   color: #038edc;
+}
+
+.hover li {
+  background-color: #ccc;
+}
+.hover li:hover {
+  background-color: #038edc;
 }
 
 .avatar-xxl {
@@ -789,21 +928,6 @@ watchEffect(() => {
   display: inline-block !important;
 }
 
-.badge-soft-danger {
-  color: #f34e4e;
-  background-color: rgba(243, 78, 78, 0.1);
-}
-
-.badge-soft-warning {
-  color: #f7cc53;
-  background-color: rgba(247, 204, 83, 0.1);
-}
-
-.badge-soft-success {
-  color: #51d28c;
-  background-color: rgba(81, 210, 140, 0.1);
-}
-
 .avatar-group .avatar-group-item {
   margin-left: -14px;
   border: 2px solid #fff;
@@ -841,70 +965,6 @@ watchEffect(() => {
   transform: scale(0);
 }
 
-.badge-soft-secondary {
-  color: #74788d;
-  background-color: rgba(116, 120, 141, 0.1);
-}
-
-.badge-soft-secondary {
-  color: #74788d;
-}
-
-.work-activity {
-  position: relative;
-  color: #74788d;
-  padding-left: 5.5rem;
-}
-
-.work-activity::before {
-  content: "";
-  position: absolute;
-  height: 100%;
-  top: 0;
-  left: 66px;
-  border-left: 1px solid rgba(3, 142, 220, 0.25);
-}
-
-.work-activity .work-item {
-  position: relative;
-  border-bottom: 2px dashed #eff0f2;
-  margin-bottom: 14px;
-}
-
-.work-activity .work-item:last-of-type {
-  padding-bottom: 0;
-  margin-bottom: 0;
-  border: none;
-}
-
-.work-activity .work-item::after,
-.work-activity .work-item::before {
-  position: absolute;
-  display: block;
-}
-
-.work-activity .work-item::before {
-  content: attr(data-date);
-  left: -157px;
-  top: -3px;
-  text-align: right;
-  font-weight: 500;
-  color: #74788d;
-  font-size: 12px;
-  min-width: 120px;
-}
-
-.work-activity .work-item::after {
-  content: "";
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  left: -26px;
-  top: 3px;
-  background-color: #fff;
-  border: 2px solid #038edc;
-}
-
 /* My design */
 .contain-list-order {
   border-style: groove;
@@ -916,5 +976,11 @@ watchEffect(() => {
 
 .order-item {
   border-style: ridge;
+}
+
+/* Customize Favorite Hanle */
+.design-heart {
+  margin-left: 24px;
+  color: red;
 }
 </style>

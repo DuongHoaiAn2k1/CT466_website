@@ -66,7 +66,9 @@
                   <td class="text-center">
                     {{ product.product_quantity }}
                   </td>
-                  <td class="text-center">{{ product.created_at }}</td>
+                  <td class="text-center">
+                    {{ convertTime(product.created_at) }}
+                  </td>
                   <td class="text-center">
                     <button
                       type="button"
@@ -102,6 +104,17 @@
                 </tr>
               </tbody>
             </table>
+            <div class="text-end">
+              <el-pagination
+                v-model:current-page="currentPage"
+                @current-change="handleCurrentChange"
+                small
+                background
+                layout="prev, pager, next"
+                :total="Math.ceil(productsLength / pageSize) * 10"
+                class="mt-4"
+              />
+            </div>
             <div v-show="datasearch.length === 0">
               <p class="text-center">Không có sản phẩm nào</p>
             </div>
@@ -117,11 +130,13 @@ import categoryService from "@/services/category.service";
 import productService from "@/services/product.service";
 import * as Yup from "yup";
 import { ElLoading, ElNotification } from "element-plus";
-import { InfoFilled } from "@element-plus/icons-vue";
 
-const confirmEvent = () => {
-  console.log("confirm!");
-};
+const currentPage = ref(1);
+const pageSize = 8;
+const productsLength = ref(0);
+// const confirmEvent = () => {
+//   console.log("confirm!");
+// };
 const cancelEvent = () => {
   console.log("cancel!");
 };
@@ -141,27 +156,14 @@ const showWarning = (message) => {
   });
 };
 
-const schema = Yup.object().shape({
-  category_name: Yup.string().required("Tên danh mục không được để trống"),
-});
-const listCategory = ref([]);
 const listProduct = ref([]);
 const search = ref("");
-
-const fetchListCategory = async () => {
-  try {
-    const response = await categoryService.getAll();
-    listCategory.value = response.listCategory;
-    console.log(listCategory.value.listCategory);
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 const fetchListProduct = async () => {
   try {
     const response = await productService.getAll();
     listProduct.value = response.listProduct;
+    productsLength.value = response.length;
     console.log(response);
   } catch (error) {
     console.log(error);
@@ -177,7 +179,6 @@ const deleteProduct = async (id) => {
   }
 };
 onMounted(() => {
-  fetchListCategory();
   fetchListProduct();
 });
 
@@ -188,9 +189,9 @@ const handleSearch = () => {
 
 const datasearch = computed(() => {
   const dataSearch = String(search.value).trim();
-
+  const startIndex = (currentPage.value - 1) * pageSize;
   if (!dataSearch) {
-    return listProduct.value;
+    return listProduct.value.slice(startIndex, startIndex + pageSize);
   }
 
   return listProduct.value.filter((data) => {
@@ -222,6 +223,20 @@ function formatCurrency(amount) {
     currency: "VND",
   });
 }
+
+const convertTime = (dateTimeString) => {
+  var dateTime = moment(dateTimeString);
+  dateTime.utcOffset(7);
+
+  var formattedDateTime = dateTime.format("DD/MM/YYYY HH:mm:ss");
+  return formattedDateTime;
+};
+
+// observing current page
+const handleCurrentChange = (val) => {
+  currentPage.value = val;
+  console.log(`current page: ${val}`);
+};
 </script>
 
 <style scoped>

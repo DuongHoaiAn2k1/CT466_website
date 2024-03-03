@@ -37,12 +37,14 @@
                   <td>{{ user.name }}</td>
                   <td>{{ user.email }}</td>
                   <td>{{ user.point }}</td>
-                  <td>{{ user.created_at }}</td>
-                  <td>{{ user.updated_at }}</td>
+                  <td>{{ convertTime(user.created_at) }}</td>
+                  <td>{{ convertTime(user.updated_at) }}</td>
                   <td>
                     <el-button
                       plain
-                      @click="handleDetailUser(user.id, user.name)"
+                      @click="
+                        handleDetailUser(user.id, user.name, user.point_used)
+                      "
                     >
                       Xem
                     </el-button>
@@ -50,6 +52,17 @@
                 </tr>
               </tbody>
             </table>
+            <div class="text-end">
+              <el-pagination
+                v-model:current-page="currentPage"
+                @current-change="handleCurrentChange"
+                small
+                background
+                layout="prev, pager, next"
+                :total="Math.ceil(listCustomerLength / pageSize) * 10"
+                class="mt-4"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -64,7 +77,7 @@
         <el-statistic title="Tổng số đơn đã đặt" :value="orderBuyCount" />
       </el-col>
       <el-col :span="6">
-        <el-statistic title="Số điểm đã dùng" :value="outputValue" />
+        <el-statistic title="Số điểm đã dùng" :value="pointUsed" />
       </el-col>
       <el-col :span="6">
         <el-statistic title="Tổng số tiền đã mua" :value="totalCostBuying" />
@@ -102,7 +115,7 @@
                         <td>
                           <span
                             v-show="data.status == '1'"
-                            class="badge rounded-pill yellow font-size-11 task-status"
+                            class="badge rounded-pill text-info font-size-11 task-status"
                             >Đang chuẩn bị</span
                           >
                           <span
@@ -121,7 +134,15 @@
                             >Đã hủy</span
                           >
                         </td>
-                        <td>Xem chi tiết</td>
+                        <td>
+                          <router-link
+                            :to="{
+                              name: 'order-detail',
+                              params: { id: data.order_id },
+                            }"
+                            >Xem chi tiết</router-link
+                          >
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -138,14 +159,16 @@
 import userService from "@/services/user.service";
 import { onMounted, ref, computed } from "vue";
 import { useTransition } from "@vueuse/core";
-import { ChatLineRound, Male } from "@element-plus/icons-vue";
 import { ElLoading } from "element-plus";
 import orderService from "@/services/order.service";
-const source = ref(0);
-const outputValue = useTransition(source, {
-  duration: 1500,
-});
-source.value = 172000;
+
+// Define panigation var
+const currentPage = ref(1);
+const pageSize = 8;
+const listCustomerLength = ref(0);
+
+// End
+
 const listCustomer = ref([]);
 const search = ref("");
 const dialogTableVisible = ref(false);
@@ -153,6 +176,7 @@ const dialogTableVisible = ref(false);
 const nameOfUser = ref("");
 const idOfUser = ref("");
 const listOrderByUser = ref([]);
+const pointUsed = ref(0);
 const orderBuyCount = computed(() => {
   return listOrderByUser.value.filter((order) => order.status == 3).length;
 });
@@ -185,6 +209,7 @@ const fetchListCustomer = async () => {
   try {
     const response = await userService.getAll();
     listCustomer.value = response.data;
+    listCustomerLength.value = response.length;
     console.log(response);
   } catch (error) {
     console.log(error.response);
@@ -193,9 +218,9 @@ const fetchListCustomer = async () => {
 
 const datasearch = computed(() => {
   const dataSearch = String(search.value).trim();
-
+  const startIndex = (currentPage.value - 1) * pageSize;
   if (!dataSearch) {
-    return listCustomer.value;
+    return listCustomer.value.slice(startIndex, startIndex + pageSize);
   }
 
   return listCustomer.value.filter((data) => {
@@ -203,10 +228,11 @@ const datasearch = computed(() => {
   });
 });
 
-const handleDetailUser = (id, name) => {
+const handleDetailUser = (id, name, point) => {
   console.log("ID: ", id);
   idOfUser.value = id;
   nameOfUser.value = name;
+  pointUsed.value = point;
   fetchOrderByUser(id);
   const loading = ElLoading.service({
     lock: true,
@@ -236,6 +262,10 @@ const convertTime = (dateTimeString) => {
 
   var formattedDateTime = dateTime.format("DD/MM/YYYY HH:mm:ss");
   return formattedDateTime;
+};
+const handleCurrentChange = (val) => {
+  currentPage.value = val;
+  console.log(`current page: ${val}`);
 };
 </script>
 

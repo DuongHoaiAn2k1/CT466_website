@@ -54,12 +54,12 @@
             </div>
             KHÁCH HÀNG
           </router-link>
-          <a class="nav-link" href="tables.html">
+          <router-link class="nav-link" :to="{ name: 'order' }">
             <div class="sb-nav-link-icon">
               <i class="fa-solid fa-clipboard"></i>
             </div>
             ĐƠN HÀNG
-          </a>
+          </router-link>
           <a class="nav-link" href="tables.html">
             <div class="sb-nav-link-icon">
               <i class="fa-solid fa-chart-simple"></i>

@@ -18,4 +18,9 @@ class Product extends Model
     {
         return $this->belongsToMany(OrderDetail::class, 'order_detail_id');
     }
+
+    public function favorite()
+    {
+        return $this->belongsToMany(Favorite::class, 'favorite_id');
+    }
 }

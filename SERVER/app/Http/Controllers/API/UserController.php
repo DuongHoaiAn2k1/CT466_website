@@ -46,11 +46,13 @@ class UserController extends Controller
                     'message' => 'Quyền này không thuộc về bạn'
                 ], 500);
             }
-            $users = User::all();
+            $users = User::where('roles', '<>', 0)->get();
+            $dataLength = count($users);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Lấy danh sách người dùng thành công',
                 'data' => $users,
+                'length' => $dataLength
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

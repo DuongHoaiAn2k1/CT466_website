@@ -38,7 +38,7 @@ const routes = [
   {
     path: "/product",
     name: "product",
-    component: () => import("@/views/Product.vue"),
+    component: () => import("@/views/Products.vue"),
     beforeEnter: (to, from, next) => {
       const authStore = useAuthStore();
       if (authStore.isAdminLoggedIn) {
@@ -97,7 +97,36 @@ const routes = [
   {
     path: "/customer",
     name: "customer",
-    component: () => import("@/views/Customer.vue"),
+    component: () => import("@/views/Customers.vue"),
+    beforeEnter: (to, from, next) => {
+      const authStore = useAuthStore();
+      if (authStore.isAdminLoggedIn) {
+        next();
+      } else {
+        next({ name: "login" });
+        showWarning();
+      }
+    },
+  },
+  {
+    path: "/order",
+    name: "order",
+    component: () => import("@/views/Orders.vue"),
+    beforeEnter: (to, from, next) => {
+      const authStore = useAuthStore();
+      if (authStore.isAdminLoggedIn) {
+        next();
+      } else {
+        next({ name: "login" });
+        showWarning();
+      }
+    },
+  },
+
+  {
+    path: "/order-detail/:id",
+    name: "order-detail",
+    component: () => import("@/views/OrderDetail.vue"),
     beforeEnter: (to, from, next) => {
       const authStore = useAuthStore();
       if (authStore.isAdminLoggedIn) {
