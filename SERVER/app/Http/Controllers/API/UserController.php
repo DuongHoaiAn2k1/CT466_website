@@ -154,52 +154,52 @@ class UserController extends Controller
         }
     }
 
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
+    // public function login(Request $request)
+    // {
+    //     $credentials = $request->only('email', 'password');
 
-        $customerMessages = [
-            'email.required' => "Email không được để trống",
-            'password.required' => 'Mật khẩu không được để trống',
-            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
-            'password.max' => 'Mật khẩu tối đa 32 ký tự',
-        ];
+    //     $customerMessages = [
+    //         'email.required' => "Email không được để trống",
+    //         'password.required' => 'Mật khẩu không được để trống',
+    //         'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
+    //         'password.max' => 'Mật khẩu tối đa 32 ký tự',
+    //     ];
 
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|min:8|max:32'
-        ], $customerMessages);
+    //     $validator = Validator::make($request->all(), [
+    //         'email' => 'required|email',
+    //         'password' => 'required|min:8|max:32'
+    //     ], $customerMessages);
 
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validation failed',
-                'errors' => $errors,
-            ], 442);
-        } else {
-            try {
-                if (!$token = auth()->attempt($credentials)) {
-                    return response()->json(['error' => 'invalid_credentials'], 400);
-                }
+    //     if ($validator->fails()) {
+    //         $errors = $validator->errors();
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Validation failed',
+    //             'errors' => $errors,
+    //         ], 442);
+    //     } else {
+    //         try {
+    //             if (!$token = auth()->attempt($credentials)) {
+    //                 return response()->json(['error' => 'invalid_credentials'], 400);
+    //             }
 
-                $user = auth()->user();
-                $role = $user->roles;
+    //             $user = auth()->user();
+    //             $role = $user->roles;
 
-                $customClaims = ['role' => $role];
-                $payload = JWTFactory::make(array_merge($customClaims, ['sub' => $user->id])); // 'sub' is the default subject claim
-                $token = JWTAuth::encode($payload);
+    //             $customClaims = ['role' => $role];
+    //             $payload = JWTFactory::make(array_merge($customClaims, ['sub' => $user->id])); // 'sub' is the default subject claim
+    //             $token = JWTAuth::encode($payload);
 
 
-                return response()->json([
-                    'status' => 'Login Successfully',
-                    'token' => $token->get()
-                ]);
-            } catch (JWTException $e) {
-                return response()->json(['error' => 'could_not_create_token'], 500);
-            }
-        }
-    }
+    //             return response()->json([
+    //                 'status' => 'Login Successfully',
+    //                 'token' => $token->get()
+    //             ]);
+    //         } catch (JWTException $e) {
+    //             return response()->json(['error' => 'could_not_create_token'], 500);
+    //         }
+    //     }
+    // }
 
     public function createAddress(Request $request)
     {
@@ -242,6 +242,82 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Thêm địa chỉ thành công'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function update(Request $request)
+    {
+        try {
+            $user_id = auth()->user()->id;
+            $name = $request->name;
+            if (empty($name)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Name is empty'
+                ], 500);
+            }
+
+            $user = User::where('id', $user_id)->first();
+            $user->name = $name;
+            $user->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Name was updated'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function update_pass(Request $request)
+    {
+        try {
+            $customerMessages = [
+                'new_pass.required' => "Mật khẩu không được để trống",
+                'new_pass.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
+                'new_pass.max' => "Mật khẩu phải tối đa 32 ký tự",
+                'old_pass.required' => "Mật khẩu không được để trống",
+                'old_pass.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
+                'old_pass.max' => "Mật khẩu phải tối đa 32 ký tự",
+            ];
+
+            $validator = Validator::make($request->all(), [
+                'new_pass' => 'required|min:8|max:32',
+                'old_pass' => 'required|min:8|max:32'
+            ], $customerMessages);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed',
+                    'errors' => $errors
+                ], 442);
+            }
+
+            $user_id = auth()->user()->id;
+            $new_pass = $request->new_pass;
+            $old_pass = $request->old_pass;
+
+            if (!auth()->attempt(['id' => $user_id, 'password' => $old_pass])) {
+                return response()->json(['error' => 'Password is incorrect'], 500);
+            }
+
+            $user = User::where("id", $user_id)->first();
+            $user->password = bcrypt($new_pass);
+            $user->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Pass'
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

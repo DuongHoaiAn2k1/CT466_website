@@ -22,69 +22,76 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         // $credentials = request(['email', 'password']);
-        if (isset($request->email)) {
-            $customerMessages = [
-                'email.required' => "Email không được để trống",
-                'password.required' => 'Mật khẩu không được để trống',
-                'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
-                'password.max' => 'Mật khẩu tối đa 32 ký tự',
-            ];
+        try {
+            if (isset($request->email)) {
+                $customerMessages = [
+                    'email.required' => "Email không được để trống",
+                    'password.required' => 'Mật khẩu không được để trống',
+                    'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
+                    'password.max' => 'Mật khẩu tối đa 32 ký tự',
+                ];
 
-            $validator = Validator::make($request->all(), [
-                'email' => 'required|email',
-                'password' => 'required|min:8|max:32'
-            ], $customerMessages);
+                $validator = Validator::make($request->all(), [
+                    'email' => 'required|email',
+                    'password' => 'required|min:8|max:32'
+                ], $customerMessages);
 
-            if ($validator->fails()) {
-                $errors = $validator->errors();
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Validation failed',
-                    'errors' => $errors,
-                ], 442);
+                if ($validator->fails()) {
+                    $errors = $validator->errors();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Validation failed',
+                        'errors' => $errors,
+                    ], 442);
+                } else {
+                    $credentials = $request->only('email', 'password');
+                }
+                if (!$token = auth()->attempt($credentials)) {
+                    return response()->json(['error' => 'Email or Password is incorrect'], 500);
+                }
+                $user_id = auth()->user()->id;
+                $refreshToken = $this->createRefreshToken();
+                return $this->respondWithToken($token, $refreshToken, $user_id);
             } else {
-                $credentials = $request->only('email', 'password');
-            }
-            if (!$token = auth()->attempt($credentials)) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            $user_id = auth()->user()->id;
-            $refreshToken = $this->createRefreshToken();
-            return $this->respondWithToken($token, $refreshToken, $user_id);
-        } else {
-            // return response()->json([
-            //     'data' => $request->username
-            // ], 200);
-            $customerMessages = [
-                'username.required' => "Email không được để trống",
-                'password.required' => 'Mật khẩu không được để trống',
-                'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
-                'password.max' => 'Mật khẩu tối đa 32 ký tự',
-            ];
+                // return response()->json([
+                //     'data' => $request->username
+                // ], 200);
+                $customerMessages = [
+                    'username.required' => "Email không được để trống",
+                    'password.required' => 'Mật khẩu không được để trống',
+                    'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
+                    'password.max' => 'Mật khẩu tối đa 32 ký tự',
+                ];
 
-            $validator = Validator::make($request->all(), [
-                'username' => 'required',
-                'password' => 'required|min:8|max:32'
-            ], $customerMessages);
+                $validator = Validator::make($request->all(), [
+                    'username' => 'required',
+                    'password' => 'required|min:8|max:32'
+                ], $customerMessages);
 
-            if ($validator->fails()) {
-                $errors = $validator->errors();
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Validation failed',
-                    'errors' => $errors,
-                ], 442);
-            } else {
-                $credentials = $request->only('username', 'password');
-            }
-            if (!$token = auth()->attempt($credentials)) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            $user_id = auth()->user()->id;
+                if ($validator->fails()) {
+                    $errors = $validator->errors();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Validation failed',
+                        'errors' => $errors,
+                    ], 442);
+                } else {
+                    $credentials = $request->only('username', 'password');
+                }
+                if (!$token = auth()->attempt($credentials)) {
+                    return response()->json(['error' => 'Unauthorized'], 401);
+                }
+                $user_id = auth()->user()->id;
 
 
-            $refreshToken = $this->createRefreshToken();
-            return $this->respondWithToken($token, $refreshToken, $user_id);
+                $refreshToken = $this->createRefreshToken();
+                return $this->respondWithToken($token, $refreshToken, $user_id);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 

@@ -44,6 +44,8 @@ Route::group([
 Route::prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'getAll'])->middleware(JWTMiddlewate::class);
     Route::get('/{id}', [UserController::class, 'index'])->middleware(JWTMiddlewate::class);
+    Route::patch('/update', [UserController::class, 'update']);
+    Route::patch('/password', [UserController::class, 'update_pass']);
     Route::post('/register', [UserController::class, 'register']);
     Route::patch('/address', [UserController::class, 'createAddress']);
     Route::delete('/address/{index}', [UserController::class, 'deleteAddress']);
@@ -83,6 +85,7 @@ Route::prefix('/cart')->group(function () {
     Route::get('/', [CartController::class, 'get']);
     Route::get('/user/count', [CartController::class, 'count']);
     Route::post('/', [CartController::class, 'create']);
+    // Route::patch('/{id}', [CartController::class, 'update']);
     Route::patch('/decrease/{id}', [CartController::class, 'decrease']);
     Route::patch('/increase/{id}', [CartController::class, 'increase']);
     Route::delete('/{id}', [CartController::class, 'delete']);
