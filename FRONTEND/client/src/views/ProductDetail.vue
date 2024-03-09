@@ -5,7 +5,7 @@
         class="container-fluid"
         style="background-color: #fff; padding: 11px"
       >
-        <div class="row">
+        <div class="row" v-show="!loading">
           <div class="col-lg-4 order-lg-1 order-2">
             <div class="container">
               <div
@@ -79,11 +79,12 @@
                 }}</span>
               </div>
               <p class="text-muted mb-0">
-                <i class="bx bxs-star text-warning"></i>
-                <i class="bx bxs-star text-warning"></i>
-                <i class="bx bxs-star text-warning"></i>
-                <i class="bx bxs-star text-warning"></i>
-                <i class="bx bxs-star-half text-warning"></i>
+                <i v-show="rateValue >= 1" class="bx bxs-star text-warning"></i>
+                <i v-show="rateValue >= 2" class="bx bxs-star text-warning"></i>
+                <i v-show="rateValue >= 3" class="bx bxs-star text-warning"></i>
+                <i v-show="rateValue >= 4" class="bx bxs-star text-warning"></i>
+                <i v-show="rateValue == 5" class="bx bxs-star text-warning"></i>
+                <!-- <i class="bx bxs-star-half text-warning"></i> -->
               </p>
               <div>
                 <span class="product_saved">Khối lượng:</span>
@@ -130,18 +131,53 @@
                 </div>
                 <div class="col-xs-6">
                   <button
-                    @click="addToCart(product.product_id)"
+                    @click="handleAddToCart(product.product_id)"
                     type="button"
                     class="btn btn-dark shop-button me-1"
                   >
                     Thêm vào giỏ hàng
                   </button>
-                  <button type="button" class="btn btn-success shop-button">
+                  <button
+                    @click="handleBuyNow(product.product_id)"
+                    type="button"
+                    class="btn btn-success shop-button"
+                  >
                     Mua ngay
                   </button>
-                  <div class="product_fav"><i class="fas fa-heart"></i></div>
+                  <div
+                    class="product_fav"
+                    v-show="!product.liked"
+                    @click="createFavorite(product.product_id)"
+                  >
+                    <i class="fa-regular fa-heart"></i>
+                  </div>
+                  <div
+                    class="product_fav"
+                    v-show="product.liked"
+                    @click="deleteFavorite(product.product_id)"
+                  >
+                    <i class="fa-solid fa-heart"></i>
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="text-center">
+            <div class="v-spinner" v-show="loading">
+              <div
+                class="v-pulse v-pulse1"
+                :style="[spinnerStyle, spinnerDelay1]"
+              ></div>
+              <div
+                class="v-pulse v-pulse2"
+                :style="[spinnerStyle, spinnerDelay2]"
+              ></div>
+              <div
+                class="v-pulse v-pulse3"
+                :style="[spinnerStyle, spinnerDelay3]"
+              ></div>
             </div>
           </div>
         </div>
@@ -162,27 +198,41 @@
 </template>
 
 <script setup>
+import "../assets/css/PulseLoader.css";
+import usePulseLoader from "../assets/js/PulseLoader.js";
 import productService from "@/services/product.service";
-import { computed, onMounted, ref, watchEffect, reactive } from "vue";
-import { useRoute } from "vue-router";
+import { computed, onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import cartService from "@/services/cart.service";
+import favoriteService from "@/services/favorite.service";
 import { useCartStore } from "@/stores/cart";
 import { ElMessage } from "element-plus";
+const { loading, spinnerStyle, spinnerDelay1, spinnerDelay2, spinnerDelay3 } =
+  usePulseLoader();
 const cartStore = useCartStore();
 const authStore = useAuthStore();
 const product = ref([]);
 const route = useRoute();
+const router = useRouter();
 const productId = computed(() => route.params.id);
 const productDetail = ref([]);
+const listFavorite = ref([]);
 const img_1 = ref("");
 const img_2 = ref("");
 const img_3 = ref("");
-
+const rateValue = ref(5);
 const quantity = ref(1);
-const addToCartSuccess = () => {
+// const addToCartSuccess = () => {
+//   ElMessage({
+//     message: "Thêm vào giỏ hàng thành công",
+//     type: "success",
+//   });
+// };
+
+const showSuccess = (message) => {
   ElMessage({
-    message: "Thêm vào giỏ hàng thành công",
+    message: message,
     type: "success",
   });
 };
@@ -199,12 +249,42 @@ const fetchProduct = async () => {
   }
 };
 
+const fetchListFavorite = async () => {
+  try {
+    const response = await favoriteService.getByUser();
+    listFavorite.value = response.data;
+    console.log(response);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
 onMounted(() => {
+  fetchListFavorite();
+
   fetchProduct().then(() => {
     productDetail.value = product.value.product_des.split(".");
     console.log("YEYE: ", productDetail);
+    setTimeout(() => {
+      updateDetailProductWithLikes();
+
+      loading.value = false;
+    }, 500);
   });
+  // setTimeout(() => {
+  //   console.log("Product Detail After Updated: ", product);
+  // }, 1000);
 });
+
+const handleAddToCart = (product_id) => {
+  addToCart(product_id);
+  showSuccess("Thêm vào giỏ hàng thành công");
+};
+
+const handleBuyNow = (product_id) => {
+  addToCart(product_id);
+  router.push({ name: "cart" });
+};
 
 const addToCart = async (product_id) => {
   try {
@@ -215,16 +295,51 @@ const addToCart = async (product_id) => {
       quantity: quantity.value,
     });
     cartStore.count();
-    console.log("Ket qua them: ", response);
-    addToCartSuccess();
+    // console.log("Ket qua them: ", response);
+    // showSuccess("Thêm vào giỏ hàng thành công");
+    // alert("Thêm vào giỏ hành thành công");
   } catch (error) {
     console.log(error.response);
-    if (error.response.data.message === "Qúa số lượng cho phép") {
-      addToCartWarning();
-    }
+    // if (error.response.data.message === "Qúa số lượng cho phép") {
+    //   // addToCartWarning();
+    // }
   }
 };
 
+const updateDetailProductWithLikes = () => {
+  const isLiked = listFavorite.value.some(
+    (favorite) => favorite.product_id == productId.value
+  );
+
+  product.value.liked = isLiked;
+};
+
+const deleteFavorite = async (productId) => {
+  // console.log(productId);
+  try {
+    const response = await favoriteService.delete(productId);
+    fetchListFavorite();
+    showSuccess("Đã loại bỏ khỏi danh sách yêu thích");
+    setTimeout(() => {
+      updateDetailProductWithLikes();
+    }, 1000);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const createFavorite = async (productId) => {
+  try {
+    const response = await favoriteService.create({ product_id: productId });
+    fetchListFavorite();
+    showSuccess("Thêm vào danh sách yêu thích thành công");
+    setTimeout(() => {
+      updateDetailProductWithLikes();
+    }, 500);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
 const incrementQuantity = () => {
   if (quantity.value < 10) {
     quantity.value++;
@@ -236,9 +351,6 @@ const decrementQuantity = () => {
     quantity.value--;
   }
 };
-// watchEffect(() => {
-//   fetchProduct();
-// });
 
 const formatCurrency = (amount) => {
   return (

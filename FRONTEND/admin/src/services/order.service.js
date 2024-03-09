@@ -34,6 +34,13 @@ class OrderService {
   async updateStatus(data, id) {
     return (await this.api.patch(`/update/${id}`, data)).data;
   }
+
+  async getToday() {
+    return (await this.api.get("/today/all")).data;
+  }
+  async getByDate(data) {
+    return (await this.api.post("/bydate/all", data)).data;
+  }
 }
 
 export default new OrderService();

@@ -17,6 +17,14 @@ class UserService {
     return (await this.api.post("/login", data)).data;
   }
 
+  async update(data) {
+    return (await this.api.patch("/update", data)).data;
+  }
+
+  async updatePass(data) {
+    return (await this.api.patch("/password", data)).data;
+  }
+
   async createAddress(data) {
     return (await this.api.patch("/address", data)).data;
   }

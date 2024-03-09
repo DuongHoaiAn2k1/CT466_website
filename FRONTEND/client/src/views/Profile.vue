@@ -72,6 +72,7 @@
               <h4 class="card-title mb-4">Đơn hàng của bạn</h4>
               <el-scrollbar height="400px">
                 <div
+                  v-show="listOrder.length"
                   class="row order-item"
                   v-for="data in listOrder"
                   :key="data.order_id"
@@ -212,6 +213,9 @@
                     </div>
                   </div>
                 </div>
+                <div v-show="!listOrder.length" class="text-center">
+                  Bạn chưa có đơn hàng nào!
+                </div>
               </el-scrollbar>
             </div>
           </div>
@@ -227,7 +231,7 @@
                 class="d-flex flex-column flex-md-row align-items-center justify-content-center"
               >
                 <div class="list-group">
-                  <el-scrollbar height="230px">
+                  <el-scrollbar v-show="listAddressUser != null" height="230px">
                     <a
                       v-for="(data, index) in listAddressUser"
                       class="list-group-item d-flex gap-3 py-3"
@@ -253,6 +257,7 @@
                       <hr />
                     </a>
                   </el-scrollbar>
+                  <p v-show="listAddressUser == null">Bạn chưa thêm địa chỉ!</p>
                   <a
                     href="#"
                     class="list-group-item list-group-item-action d-flex gap-3 py-3"
@@ -433,20 +438,26 @@
             <h4 class="card-title mb-4">Quản lý tài khoản</h4>
             <ul class="list-group hover">
               <li
-                class="list-group-item list-group-item-action my-1"
+                class="list-group-item list-group-item-action my-1 btn"
                 @click="dialogListFavorite = true"
               >
                 <i class="fa-solid fa-heart"></i>
                 Danh sách sản phẩm yêu thích
               </li>
-              <li class="list-group-item list-group-item-action my-1">
+              <li
+                class="list-group-item list-group-item-action my-1 btn"
+                @click="dialogUpdateProfile = true"
+              >
                 <i class="fa-solid fa-pen-to-square"></i> Cập nhật thông tin tài
                 khoản
               </li>
-              <li class="list-group-item list-group-item-action my-1">
+              <li
+                class="list-group-item list-group-item-action my-1 btn"
+                @click="dialogUpdatePassword = true"
+              >
                 <i class="fa-solid fa-key"></i> Đổi mật khẩu
               </li>
-              <li class="list-group-item list-group-item-action my-1">
+              <li class="list-group-item list-group-item-action my-1 btn">
                 <i class="fa-solid fa-trash"></i> Xóa tài khoản
               </li>
             </ul>
@@ -545,6 +556,86 @@
       </div>
     </section>
   </el-dialog>
+  <el-dialog
+    v-model="dialogUpdateProfile"
+    title="Cập nhật thông tin tài khoản"
+    width="800"
+  >
+    <div class="mb-3 row">
+      <label for="staticEmail" class="col-sm-2 col-form-label">HỌ VÀ TÊN</label>
+      <div class="col-sm-10">
+        <input
+          v-model="nameUser"
+          class="form-control"
+          list="datalistOptions"
+          id="exampleDataList"
+        />
+      </div>
+      <span class="text-danger text-center">{{ nameUserError }}</span>
+    </div>
+    <!-- <div class="mb-3 row">
+        <label for="inputPassword" class="col-sm-2 col-form-label"
+          >MẬT KHẨU</label
+        >
+        <div class="col-sm-10">
+          <input type="password" class="form-control" id="inputPassword" />
+        </div>
+      </div> -->
+    <div class="mb-3 row">
+      <button
+        @click="handleUpdateNameOfUser(nameUser)"
+        type="button"
+        class="btn btn-success"
+      >
+        Cập nhật
+      </button>
+    </div>
+  </el-dialog>
+
+  <el-dialog v-model="dialogUpdatePassword" title="Đổi mật khẩu" width="800">
+    <div class="mb-3 row">
+      <label for="inputPassword" class="col-sm-2 col-form-label"
+        >MẬT KHẨU MỚI</label
+      >
+      <div class="col-sm-10">
+        <input
+          type="password"
+          class="form-control"
+          id="inputPassword"
+          v-model="newPass"
+        />
+      </div>
+
+      <span class="text-danger text-center">{{ newPassError }}</span>
+    </div>
+
+    <div class="mb-3 row">
+      <label for="inputPassword" class="col-sm-2 col-form-label"
+        >MẬT KHẨU CŨ</label
+      >
+      <div class="col-sm-10">
+        <input
+          type="password"
+          class="form-control"
+          id="inputPassword"
+          v-model="oldPass"
+        />
+      </div>
+
+      <span class="text-danger text-center">{{ oldPassError }}</span>
+    </div>
+
+    <div class="mb-3 row">
+      <span class="text-danger text-center">{{ passWordError }}</span>
+      <button
+        @click="handleUpdatePassword"
+        type="button"
+        class="btn btn-success"
+      >
+        Cập nhật
+      </button>
+    </div>
+  </el-dialog>
 </template>
 
 <script setup>
@@ -561,8 +652,11 @@ import favoriteService from "@/services/favorite.service";
 
 // Dialog var
 const dialogListFavorite = ref(false);
-
+const dialogUpdateProfile = ref(false);
+const dialogUpdatePassword = ref(false);
 // End
+
+// Schema validation Hanlde create Address
 const schema = Yup.object().shape({
   name: Yup.string().required("Họ và tên không được để trống"),
   phone: Yup.string()
@@ -577,11 +671,19 @@ const schema = Yup.object().shape({
 
 const authStore = useAuthStore();
 const userData = ref({});
+const nameUser = ref("");
 const listAddressUser = ref([]);
 const currentPage = ref(1);
 const pageSize = 4;
 const favoriteLength = ref(0);
+// Define some value for hanlde Update Password
+const newPass = ref("");
+const oldPass = ref("");
+const passWordError = ref(null);
 
+// End define
+
+// Address Data
 const addressInfoData = reactive({
   name: "",
   phone: "",
@@ -607,6 +709,7 @@ const fetchUserData = async () => {
 
     const response = await userService.get(userId);
     userData.value = response.data;
+    nameUser.value = response.data.name;
     console.log(response.data.address);
     listAddressUser.value = JSON.parse(response.data.address);
   } catch (error) {
@@ -677,6 +780,106 @@ const deleteFavorite = async (productId) => {
   } catch (error) {
     console.log(error.response);
   }
+};
+
+const updateNameUser = async (name) => {
+  try {
+    const response = await userService.update({ name: name });
+    console.log(response);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const nameUserError = ref("");
+const handleUpdateNameOfUser = (name) => {
+  if (name == "") {
+    nameUserError.value = "Họ và tên không được để trống";
+  } else {
+    updateNameUser(name);
+    const loading = ElLoading.service({
+      lock: true,
+      text: "Đang xử lý...",
+      background: "rgba(0,0,0, 0.7)",
+    });
+
+    setTimeout(() => {
+      showSuccess("Cập nhật thành công");
+      fetchUserData();
+      loading.close();
+      dialogUpdateProfile.value = false;
+    }, 2000);
+  }
+};
+
+const schemaPass = Yup.object().shape({
+  oldPass: Yup.string()
+    .matches(/[a-zA-Z]/, "Mật khẩu phải có ít nhất một chữ cái")
+    .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
+    .max(20, "Mật khẩu chỉ tối đa 20 ký tự")
+    .required("Mật khẩu không được để trống"),
+  newPass: Yup.string()
+    .matches(/[a-zA-Z]/, "Mật khẩu phải có ít nhất một chữ cái")
+    .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
+    .max(20, "Mật khẩu chỉ tối đa 20 ký tự")
+    .required("Mật khẩu không được để trống"),
+});
+
+const newPassError = ref(null);
+const oldPassError = ref(null);
+
+const updatePassWord = async () => {
+  try {
+    const response = await userService.updatePass({
+      new_pass: newPass.value,
+      old_pass: oldPass.value,
+    });
+    const loading = ElLoading.service({
+      lock: true,
+      text: "Đang xử lý...",
+      background: "rgba(0,0,0, 0.7)",
+    });
+    setTimeout(() => {
+      showSuccess("Cập nhật mật khẩu thành công");
+
+      loading.close();
+      dialogUpdatePassword.value = false;
+    }, 2000);
+  } catch (error) {
+    console.log(error.response);
+    if (error.response.data.error === "Password is incorrect") {
+      passWordError.value = "Mật khẩu cũ không đúng";
+    }
+  }
+};
+
+const handleUpdatePassword = async () => {
+  newPassError.value = null;
+  oldPassError.value = null;
+  passWordError.value = null;
+  schemaPass
+    .validate(
+      { oldPass: oldPass.value, newPass: newPass.value },
+      { abortEarly: false }
+    )
+    .then(() => {
+      newPassError.value = null;
+      oldPassError.value = null;
+
+      updatePassWord();
+    })
+    .catch((errors) => {
+      errors.inner.forEach((error) => {
+        if (error.path == "newPass") {
+          newPassError.value = error.message;
+        }
+        if ((error.path = "oldPass")) {
+          oldPassError.value = error.message;
+        }
+      });
+    });
+  // console.log("New Pass: ", newPass.value);
+  // console.log("Old Pass: ", oldPass.value);
 };
 
 const showSuccess = (message) => {
@@ -984,3 +1187,5 @@ const paginatedList = computed(() => {
   color: red;
 }
 </style>
+import userService from "@/services/user.service";import userService from
+"@/services/user.service";

@@ -46,6 +46,7 @@ Route::prefix('user')->group(function () {
     Route::get('/{id}', [UserController::class, 'index'])->middleware(JWTMiddlewate::class);
     Route::patch('/update', [UserController::class, 'update']);
     Route::patch('/password', [UserController::class, 'update_pass']);
+    Route::delete('/{id}', [UserController::class, 'delete_user']);
     Route::post('/register', [UserController::class, 'register']);
     Route::patch('/address', [UserController::class, 'createAddress']);
     Route::delete('/address/{index}', [UserController::class, 'deleteAddress']);
@@ -97,6 +98,8 @@ Route::prefix('/order')->group(function () {
     Route::get('/user/get',  [OrderController::class, 'get_by_user']);
     Route::get('/user/{id}', [OrderController::class, 'get_by_user_id']);
     Route::get('/get/all', [OrderController::class, 'getAll']);
+    Route::get('/today/all', [OrderController::class, 'get_order_today']);
+    Route::post('/bydate/all', [OrderController::class, 'get_orders_between_dates']);
     Route::post('/', [OrderController::class, 'create']);
     Route::delete('/{id}', [OrderController::class, 'delete']);
     Route::get('/count/order', [OrderController::class, 'count']);

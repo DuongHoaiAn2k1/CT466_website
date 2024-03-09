@@ -8,23 +8,19 @@
 import { ref, onMounted, watchEffect, watch } from "vue";
 import AppHeader from "@/components/AppHeader.vue";
 import AppFooter from "@/components/AppFooter.vue";
-import cartService from "@/services/cart.service";
 import { useCartStore } from "@/stores/cart";
+import { useAuthStore } from "@/stores/auth";
 const number = ref(0);
-// const countCart = async () => {
-//   try {
-//     const response = await cartService.count();
-//     number.value = response.number;
-//   } catch (error) {
-//     console.error(error.response);
-//   }
-// };
 
 const cartStore = useCartStore();
-
+const authStore = useAuthStore();
 onMounted(async () => {
-  await cartStore.fetchCartCount();
-  number.value = cartStore.count;
+  if (authStore.isUserLoggedIn == true) {
+    await cartStore.fetchCartCount();
+    number.value = cartStore.count;
+  } else {
+    number.value = 0;
+  }
 });
 
 watch(() => {
@@ -41,3 +37,4 @@ body {
   font-family: Roboto, Helvetica, Arial, sans-serif;
 }
 </style>
+import { useAuthStore } from "./stores/auth";useAuthStore,

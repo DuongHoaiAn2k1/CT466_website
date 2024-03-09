@@ -60,12 +60,12 @@
             </div>
             ĐƠN HÀNG
           </router-link>
-          <a class="nav-link" href="tables.html">
+          <router-link class="nav-link" :to="{ name: 'statistics' }">
             <div class="sb-nav-link-icon">
               <i class="fa-solid fa-chart-simple"></i>
             </div>
             THỐNG KÊ
-          </a>
+          </router-link>
           <a class="nav-link" href="tables.html">
             <div class="sb-nav-link-icon">
               <i class="fa-solid fa-user-tie"></i>

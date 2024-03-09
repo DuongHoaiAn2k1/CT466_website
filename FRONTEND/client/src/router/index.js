@@ -58,6 +58,36 @@ const routes = [
     name: "order-detail",
     component: () => import("@/views/OrderDetail.vue"),
   },
+  {
+    path: "/food",
+    name: "food",
+    component: () => import("@/views/Food.vue"),
+  },
+  {
+    path: "/travelling",
+    name: "travelling",
+    component: () => import("@/views/Travelling.vue"),
+  },
+  {
+    path: "/tip",
+    name: "tip",
+    component: () => import("@/views/Tip.vue"),
+  },
+  {
+    path: "/guide",
+    name: "guide",
+    component: () => import("@/views/Guide.vue"),
+  },
+  {
+    path: "/shipping",
+    name: "shipping",
+    component: () => import("@/views/Shipping.vue"),
+  },
+  {
+    path: "/contact",
+    name: "contact",
+    component: () => import("@/views/Contact.vue"),
+  },
 ];
 
 const router = createRouter({

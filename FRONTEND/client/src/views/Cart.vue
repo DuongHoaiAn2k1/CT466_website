@@ -126,7 +126,7 @@
 
       <div class="col-xl-4">
         <div class="mt-5 mt-lg-0">
-          <div class="border shadow-none">
+          <div class="border shadow-none" v-show="cartStore.count != 0">
             <div class="card-header bg-transparent border-bottom py-3 px-4">
               <h5 class="font-size-20 mb-0">Chi tiết giỏ hàng</h5>
             </div>

@@ -29,6 +29,7 @@
                   <th class="col">Thời gian tạo</th>
                   <th class="col">Thời gian cập nhật</th>
                   <th class="col">Chi tiết</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -48,6 +49,11 @@
                     >
                       Xem
                     </el-button>
+                  </td>
+                  <td>
+                    <el-button @click="handleDeleteUser(user.id)"
+                      ><i class="fa-solid fa-trash"></i
+                    ></el-button>
                   </td>
                 </tr>
               </tbody>
@@ -159,7 +165,7 @@
 import userService from "@/services/user.service";
 import { onMounted, ref, computed } from "vue";
 import { useTransition } from "@vueuse/core";
-import { ElLoading } from "element-plus";
+import { ElLoading, ElMessage, ElMessageBox } from "element-plus";
 import orderService from "@/services/order.service";
 
 // Define panigation var
@@ -228,6 +234,14 @@ const datasearch = computed(() => {
   });
 });
 
+const deleteUser = async (id) => {
+  try {
+    const response = await userService.deleteUser(id);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const handleDetailUser = (id, name, point) => {
   console.log("ID: ", id);
   idOfUser.value = id;
@@ -245,6 +259,36 @@ const handleDetailUser = (id, name, point) => {
   }, 1000);
 };
 
+const handleDeleteUser = (userId) => {
+  ElMessageBox.confirm("Bạn có chắc muốn xóa người dùng?", "Thông báo", {
+    confirmButtonText: "OK",
+    cancelButtonText: "Cancel",
+    type: "warning",
+  })
+    .then(() => {
+      deleteUser(userId);
+      const loading = ElLoading.service({
+        lock: true,
+        text: "Đang xử lý...",
+        background: "rgba(0,0,0, 0.7)",
+      });
+      setTimeout(() => {
+        fetchListCustomer();
+        loading.close();
+
+        ElMessage({
+          type: "success",
+          message: "Xóa người dùng thành công",
+        });
+      }, 2000);
+    })
+    .catch(() => {
+      // ElMessage({
+      //   type: "info",
+      //   message: "Delete canceled",
+      // });
+    });
+};
 onMounted(() => {
   fetchListCustomer();
 });
@@ -324,3 +368,4 @@ const handleCurrentChange = (val) => {
   z-index: 0;
 }
 </style>
+import userService from "@/services/user.service";

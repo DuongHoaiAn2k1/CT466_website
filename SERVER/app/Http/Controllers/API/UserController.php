@@ -67,22 +67,16 @@ class UserController extends Controller
      */
     public function register(Request $request)
     {
-        // 'email' => 'required|email|unique:users,email',
 
         $customMessages = [
             'name.required' => 'Họ tên không được để trống',
             'email.required' => 'Email không được để trống',
-            // 'email.unique' => "Email đã tồn tại",
             'phone.required' => 'Số điện thoại không được để trống',
             'phone.digits' => 'Số điện thoại cần có đúng 10 số',
             'password.required' => 'Mật khẩu không được để trống',
             'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
             'password.max' => 'Mật khẩu tối đa 32 ký tự',
-            // 'address.required' => 'Địa chỉ không được để trống',
-            // 'address.city' => 'Trường này không được để trống',
-            // 'address.district' => 'Trường này không được để trống',
-            // 'address.wards' => 'Trường này không được để trống',
-            // 'address.street' => 'Trường này không được để trống',
+
         ];
 
         $validator = Validator::make($request->all(), [
@@ -90,10 +84,7 @@ class UserController extends Controller
             'email' => 'required|email',
             'phone' => 'required|digits:10',
             'password' => 'required|min:8|max:32',
-            // 'address.city' => 'required',
-            // 'address.district' => 'required',
-            // 'address.wards' => 'required',
-            // 'address.street' => 'required',
+
         ], $customMessages);
 
 
@@ -126,9 +117,9 @@ class UserController extends Controller
                             $user->email = $request->email;
                             $user->password = bcrypt($request->password);
                             $user->phone = $request->phone;
-                            // $user->address = json_encode($request->address);
                             $user->roles = 1;
                             $user->point = 0;
+                            $user->point_used = 0;
                             $user->save();
                             return response()->json([
                                 'status' => 'success',
@@ -153,53 +144,6 @@ class UserController extends Controller
             }
         }
     }
-
-    // public function login(Request $request)
-    // {
-    //     $credentials = $request->only('email', 'password');
-
-    //     $customerMessages = [
-    //         'email.required' => "Email không được để trống",
-    //         'password.required' => 'Mật khẩu không được để trống',
-    //         'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
-    //         'password.max' => 'Mật khẩu tối đa 32 ký tự',
-    //     ];
-
-    //     $validator = Validator::make($request->all(), [
-    //         'email' => 'required|email',
-    //         'password' => 'required|min:8|max:32'
-    //     ], $customerMessages);
-
-    //     if ($validator->fails()) {
-    //         $errors = $validator->errors();
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Validation failed',
-    //             'errors' => $errors,
-    //         ], 442);
-    //     } else {
-    //         try {
-    //             if (!$token = auth()->attempt($credentials)) {
-    //                 return response()->json(['error' => 'invalid_credentials'], 400);
-    //             }
-
-    //             $user = auth()->user();
-    //             $role = $user->roles;
-
-    //             $customClaims = ['role' => $role];
-    //             $payload = JWTFactory::make(array_merge($customClaims, ['sub' => $user->id])); // 'sub' is the default subject claim
-    //             $token = JWTAuth::encode($payload);
-
-
-    //             return response()->json([
-    //                 'status' => 'Login Successfully',
-    //                 'token' => $token->get()
-    //             ]);
-    //         } catch (JWTException $e) {
-    //             return response()->json(['error' => 'could_not_create_token'], 500);
-    //         }
-    //     }
-    // }
 
     public function createAddress(Request $request)
     {
@@ -431,6 +375,23 @@ class UserController extends Controller
                 'message' => 'Get Current Point SuccessFully',
                 'point' => $user->point,
                 'used_point' => $user->point_used
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function delete_user($user_id)
+    {
+        try {
+            $user = User::where('id', $user_id)->first();
+            $user->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Delete user successfully'
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

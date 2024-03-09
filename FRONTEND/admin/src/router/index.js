@@ -137,6 +137,20 @@ const routes = [
       }
     },
   },
+  {
+    path: "/statistics",
+    name: "statistics",
+    component: () => import("@/views/Statistics.vue"),
+    beforeEnter: (to, from, next) => {
+      const authStore = useAuthStore();
+      if (authStore.isAdminLoggedIn) {
+        next();
+      } else {
+        next({ name: "login" });
+        showWarning();
+      }
+    },
+  },
 ];
 
 const showWarning = () => {

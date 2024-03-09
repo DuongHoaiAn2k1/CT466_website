@@ -231,4 +231,70 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    public function get_order_today()
+    {
+        try {
+            $today = now()->format('Y-m-d');
+            $order_today = Order::with('orderDetail.product')
+                ->whereDate('created_at', $today)
+                ->orderBy('created_at', 'desc')
+                ->get();
+            $data_length = count($order_today);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Get List Order for Today Successfully',
+                'data' => $order_today,
+                'length' => $data_length
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function get_orders_between_dates(Request $request)
+    {
+        try {
+            // Validate request data
+            $validator = Validator::make($request->all(), [
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+
+            // Query orders between start date and end date
+            $orders = Order::with('orderDetail.product')
+                ->whereBetween('created_at', [$start_date, $end_date])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $data_length = count($orders);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Get List Order between dates successfully',
+                'data' => $orders,
+                'length' => $data_length
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

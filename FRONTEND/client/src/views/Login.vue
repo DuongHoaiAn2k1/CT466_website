@@ -83,7 +83,6 @@ import { ElLoading, ElNotification } from "element-plus";
 import { useAuthStore } from "@/stores/auth";
 import userService from "@/services/user.service";
 import authService from "@/services/auth.service";
-import Cookies from "js-cookie";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { h } from "vue";
@@ -141,7 +140,10 @@ const submitLogin = async (event) => {
             router.push({ name: "home" });
           }, 1000);
         } catch (error) {
-          console.log(error);
+          console.log(error.response);
+          if (error.response.data.error === "Email or Password is incorrect") {
+            showLoginWarning();
+          }
         }
       };
 
@@ -168,6 +170,14 @@ const showLoginSuccess = () => {
   ElMessage({
     message: "Đăng nhập thành công.",
     type: "success",
+  });
+};
+
+const showLoginWarning = () => {
+  ElNotification({
+    title: "Warning",
+    message: "Email hoặc mật khẩu không chính xác",
+    type: "warning",
   });
 };
 

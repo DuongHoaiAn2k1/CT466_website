@@ -40,7 +40,10 @@
   </div>
   <div class="container bg-trasparent mt-2" style="position: relative">
     <p style="margin-bottom: 0px; font-weight: 600">KHÔ CÁ CÀ MAU</p>
-    <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-5 g-3">
+    <div
+      v-show="!loading"
+      class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-5 g-3"
+    >
       <div class="col hp" v-for="product in fishList" :key="product.product_id">
         <div class="card h-100 shadow-sm">
           <router-link
@@ -103,11 +106,30 @@
         </div>
       </div>
     </div>
+    <div class="text-center my-5">
+      <div class="v-spinner" v-show="loading">
+        <div
+          class="v-pulse v-pulse1"
+          :style="[spinnerStyle, spinnerDelay1]"
+        ></div>
+        <div
+          class="v-pulse v-pulse2"
+          :style="[spinnerStyle, spinnerDelay2]"
+        ></div>
+        <div
+          class="v-pulse v-pulse3"
+          :style="[spinnerStyle, spinnerDelay3]"
+        ></div>
+      </div>
+    </div>
   </div>
 
   <div class="container bg-trasparent mt-2" style="position: relative">
     <p style="margin-bottom: 0px; font-weight: 600">TÔM KHÔ</p>
-    <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-5 g-3">
+    <div
+      v-show="!loading"
+      class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-5 g-3"
+    >
       <div
         class="col hp"
         v-for="product in shrimpList"
@@ -172,11 +194,30 @@
         </div>
       </div>
     </div>
+
+    <div class="text-center my-5">
+      <div class="v-spinner" v-show="loading">
+        <div
+          class="v-pulse v-pulse1"
+          :style="[spinnerStyle, spinnerDelay1]"
+        ></div>
+        <div
+          class="v-pulse v-pulse2"
+          :style="[spinnerStyle, spinnerDelay2]"
+        ></div>
+        <div
+          class="v-pulse v-pulse3"
+          :style="[spinnerStyle, spinnerDelay3]"
+        ></div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import "../assets/card.css";
+import "../assets/css/PulseLoader.css";
+import usePulseLoader from "../assets/js/PulseLoader.js";
 import categoryService from "@/services/category.service";
 import favoriteService from "@/services/favorite.service";
 import productService from "@/services/product.service";
@@ -186,6 +227,8 @@ import cartService from "@/services/cart.service";
 import { useCartStore } from "@/stores/cart";
 import { ElNotification, ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
+const { loading, spinnerStyle, spinnerDelay1, spinnerDelay2, spinnerDelay3 } =
+  usePulseLoader();
 const router = useRouter();
 const cartStore = useCartStore();
 const authStore = useAuthStore();
@@ -230,8 +273,8 @@ const fetchList = async () => {
       category_name: "Tôm khô Cà Mau",
     });
     console.log("Cá: ", response);
-    fishList.value = response.data;
-    shrimpList.value = response2.data;
+    fishList.value = response.data.slice(0, 5);
+    shrimpList.value = response2.data.slice(0, 5);
   } catch (error) {
     console.log(error.response);
   }
@@ -322,6 +365,7 @@ onMounted(() => {
   setTimeout(() => {
     updateFishListWithLikes();
     updateShrimpListWithLikes();
+    loading.value = false;
     console.log(fishList);
   }, 3000);
 });

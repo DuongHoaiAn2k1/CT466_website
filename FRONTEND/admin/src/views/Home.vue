@@ -200,7 +200,6 @@ import { computed, onMounted, ref, reactive } from "vue";
 import categoryService from "@/services/category.service";
 import * as Yup from "yup";
 import { ElLoading, ElNotification } from "element-plus";
-import { InfoFilled } from "@element-plus/icons-vue";
 
 const currentPage = ref(1);
 const pageSize = 8;

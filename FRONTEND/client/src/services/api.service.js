@@ -58,6 +58,17 @@ export default (baseURL) => {
           authStore.logout();
           window.location.href = "http://localhost:3001/login";
         }, 2000);
+      } else if (
+        error.request &&
+        error.response.status === 500 &&
+        error.response.data.message === "Attempt to read property 'id' on null"
+      ) {
+        showInfo();
+        setTimeout(() => {
+          const authStore = useAuthStore();
+          authStore.logout();
+          window.location.href = "http://localhost:3001/login";
+        }, 2000);
       }
       return Promise.reject(error);
     }
@@ -65,3 +76,4 @@ export default (baseURL) => {
 
   return instance;
 };
+// Attempt to read property "id" on null

@@ -236,7 +236,7 @@ const submitSignUp = async (event) => {
           console.log(response);
         } catch (error) {
           console.log("Đăng ký thất bại!!!");
-          // console.log(error.response.data.message);
+          console.log(error);
           if (error.response.data.message == "Email đã tồn tại") {
             showEmailExists();
           }

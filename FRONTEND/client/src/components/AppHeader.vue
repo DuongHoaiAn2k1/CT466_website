@@ -103,33 +103,34 @@
             </div>
           </li>
           <li class="nav-item me-2 me-lg-0 d-none d-md-inline-block">
-            <a class="nav-link" href="#"
-              ><i class="fas fa-utensils"></i> Ẩm thực Cà Mau</a
+            <router-link class="nav-link" :to="{ name: 'food' }"
+              ><i class="fas fa-utensils"></i> Ẩm thực Cà Mau</router-link
             >
           </li>
           <li class="nav-item me-2 me-lg-0 d-none d-md-inline-block">
-            <a class="nav-link" href="#"
-              ><i class="fas fa-briefcase"></i> Du lịch Cà Mau</a
+            <router-link class="nav-link" :to="{ name: 'travelling' }"
+              ><i class="fas fa-briefcase"></i> Du lịch Cà Mau</router-link
             >
           </li>
           <li class="nav-item me-2 me-lg-0 d-none d-md-inline-block">
-            <a class="nav-link" href="#"
-              ><i class="fas fa-file-alt"></i> Mẹo hay</a
+            <router-link class="nav-link" :to="{ name: 'tip' }"
+              ><i class="fas fa-file-alt"></i> Mẹo hay</router-link
             >
           </li>
           <li class="nav-item me-2 me-lg-0 d-none d-md-inline-block">
-            <a class="nav-link" href="#"
-              ><i class="fas fa-info"></i> Hướng dẫn mua hàng</a
+            <router-link class="nav-link" :to="{ name: 'guide' }"
+              ><i class="fas fa-info"></i> Hướng dẫn mua hàng</router-link
             >
           </li>
           <li class="nav-item me-2 me-lg-0 d-none d-md-inline-block">
-            <a class="nav-link" href="#"
-              ><i class="fas fa-credit-card"></i> Thanh toán</a
+            <router-link class="nav-link" :to="{ name: 'shipping' }"
+              ><i class="fas fa-credit-card"></i> Chính sách giao
+              hàng</router-link
             >
           </li>
           <li class="nav-item me-2 me-lg-0 d-none d-md-inline-block">
-            <a class="nav-link" href="#"
-              ><i class="fas fa-map-marker-alt"></i> Liên hệ</a
+            <router-link class="nav-link" :to="{ name: 'contact' }"
+              ><i class="fas fa-map-marker-alt"></i> Liên hệ</router-link
             >
           </li>
         </ul>
@@ -185,9 +186,7 @@ import authService from "@/services/auth.service";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
-import cartService from "@/services/cart.service";
 import { useCartStore } from "@/stores/cart";
-import { boolean } from "yup";
 
 const showLogoutSuccess = () => {
   ElMessage({
@@ -228,10 +227,6 @@ const fetchListCategory = async () => {
 
 onMounted(() => {
   fetchListCategory();
-
-  // countCart();
-
-  // console.log(isLogin);
 });
 const toggleNavigatorOne = () => {
   isClick.value = !isClick.value;
