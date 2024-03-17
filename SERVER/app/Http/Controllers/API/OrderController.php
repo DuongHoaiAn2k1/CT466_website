@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -289,6 +290,27 @@ class OrderController extends Controller
                 'message' => 'Get List Order between dates successfully',
                 'data' => $orders,
                 'length' => $data_length
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function list_user_order()
+    {
+        try {
+
+            $usersOrders = Order::select('users.id', 'users.name', DB::raw('COUNT(*) as total_orders'), DB::raw('SUM(total_cost) as total_cost'))
+                ->join('users', 'orders.user_id', '=', 'users.id')
+                ->groupBy('users.id', 'users.name')
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'List of Users with Total Orders and Total Cost',
+                'data' => $usersOrders
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

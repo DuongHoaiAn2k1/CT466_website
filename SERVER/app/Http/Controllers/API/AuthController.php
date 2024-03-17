@@ -79,7 +79,7 @@ class AuthController extends Controller
                     $credentials = $request->only('username', 'password');
                 }
                 if (!$token = auth()->attempt($credentials)) {
-                    return response()->json(['error' => 'Unauthorized'], 401);
+                    return response()->json(['error' => 'Username or password is incorrect'], 500);
                 }
                 $user_id = auth()->user()->id;
 
@@ -121,6 +121,11 @@ class AuthController extends Controller
         $refreshToken = request()->refresh_Token;
         try {
             $decoded = JWTAuth::getJWTProvider()->decode($refreshToken);
+            if (strtotime($decoded['exp']) < time()) {
+                return response()->json([
+                    "message" => "Refresh Token has expired"
+                ], 401);
+            }
             $user = User::find($decoded['sub']);
             if (!$user) {
                 return response()->json([
@@ -156,10 +161,30 @@ class AuthController extends Controller
         $data = [
             'sub' => auth()->user()->id,
             'random' => rand() . time(),
-            'exp' => time() +  2880
+            'exp' => time() +  config('jwt.refresh_ttl')
         ];
 
         $refreshToken = JWTAuth::getJWTProvider()->encode($data);
         return $refreshToken;
+    }
+
+    public function checkRefreshTokenExpiration(Request $request)
+    {
+        try {
+            $refreshToken = $request->refresh_Token;
+            $decoded = JWTAuth::getJWTProvider()->decode($refreshToken);
+
+            // Kiểm tra thời gian hết hạn của refresh_token
+            if (isset($decoded['exp']) && $decoded['exp'] > time()) {
+                // Refresh token còn hạn
+                return true;
+            } else {
+                // Refresh token đã hết hạn
+                return false;
+            }
+        } catch (\Exception $e) {
+            // Xảy ra lỗi khi giải mã token
+            return false;
+        }
     }
 }

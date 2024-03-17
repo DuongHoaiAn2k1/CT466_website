@@ -25,7 +25,12 @@
                   <th>STT</th>
                   <th class="col">Tên khách hàng</th>
                   <th class="col">Email</th>
-                  <th class="col">Điểm tích lũy</th>
+                  <th class="col">
+                    Điểm tích lũy
+                    <button class="border-none" @click="toggleSortOrderPoint">
+                      <i class="fa-solid fa-sort"></i>
+                    </button>
+                  </th>
                   <th class="col">Thời gian tạo</th>
                   <th class="col">Thời gian cập nhật</th>
                   <th class="col">Chi tiết</th>
@@ -33,7 +38,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(user, index) in datasearch" :key="user.id">
+                <tr v-for="(user, index) in sortedCustomers" :key="user.id">
                   <th scope="row">{{ index + 1 }}</th>
                   <td>{{ user.name }}</td>
                   <td>{{ user.email }}</td>
@@ -167,7 +172,7 @@ import { onMounted, ref, computed } from "vue";
 import { useTransition } from "@vueuse/core";
 import { ElLoading, ElMessage, ElMessageBox } from "element-plus";
 import orderService from "@/services/order.service";
-
+const sortOrderPoint = ref("ascending");
 // Define panigation var
 const currentPage = ref(1);
 const pageSize = 8;
@@ -289,6 +294,21 @@ const handleDeleteUser = (userId) => {
       // });
     });
 };
+const toggleSortOrderPoint = () => {
+  sortOrderPoint.value =
+    sortOrderPoint.value === "ascending" ? "descending" : "ascending";
+};
+
+const sortedCustomers = computed(() => {
+  const data = datasearch.value.slice();
+  return data.sort((a, b) => {
+    if (sortOrderPoint.value === "ascending") {
+      return a.point - b.point;
+    } else {
+      return b.point - a.point;
+    }
+  });
+});
 onMounted(() => {
   fetchListCustomer();
 });

@@ -39,6 +39,7 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
+    Route::post('check', [AuthController::class, 'checkRefreshTokenExpiration']);
 });
 
 Route::prefix('user')->group(function () {
@@ -105,6 +106,7 @@ Route::prefix('/order')->group(function () {
     Route::get('/count/order', [OrderController::class, 'count']);
     Route::patch('/{id}', [OrderController::class, 'cancel']);
     Route::patch('update/{id}', [OrderController::class, 'update_status']);
+    Route::get('/get/order/user', [OrderController::class, 'list_user_order']);
 });
 
 Route::prefix('/orderDetail')->group(function () {

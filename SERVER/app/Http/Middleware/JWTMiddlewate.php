@@ -21,11 +21,11 @@ class JWTMiddlewate
             $user = JWTAuth::parseToken()->authenticate();
         } catch (JWTException $e) {
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
-                return response()->json(['error' => 'Token has expired'], 401);
+                return response()->json(['error' => 'Access Token has expired'], 401);
             } elseif ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-                return response()->json(['error' => 'Token is invalid'], 401);
+                return response()->json(['error' => 'Access Token is invalid'], 401);
             } else {
-                return response()->json(['error' => 'Token not found'], 401);
+                return response()->json(['error' => 'Access Token not found'], 401);
             }
         }
 

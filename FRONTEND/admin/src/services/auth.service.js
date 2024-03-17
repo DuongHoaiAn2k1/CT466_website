@@ -9,6 +9,10 @@ class AuthService {
     return (await this.api.post("/login", data)).data;
   }
 
+  async refresh(data) {
+    return (await this.api.post("/refresh", data)).data;
+  }
+
   async logout() {
     return (await this.api.post("/logout")).data;
   }

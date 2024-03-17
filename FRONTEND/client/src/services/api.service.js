@@ -44,31 +44,30 @@ export default (baseURL) => {
       if (
         error.request &&
         error.response.status === 401 &&
-        error.response.statusText === "Unauthorized"
+        error.response.data.error === "Access Token has expired"
+        // error.response.statusText === "Unauthorized"
       ) {
         window.location.href = "http://localhost:3001/tokenProcess";
       } else if (
         error.request &&
-        error.response.status === 500 &&
-        error.response.data.message === "Token has expired"
+        error.response.status === 401 &&
+        error.response.data.message === "Refresh Token has expired"
       ) {
+        // alert("Refresh Token has expired");
         showInfo();
         setTimeout(() => {
           const authStore = useAuthStore();
           authStore.logout();
-          window.location.href = "http://localhost:3001/login";
+          window.location.href = "http://localhost:3002/login";
         }, 2000);
       } else if (
         error.request &&
         error.response.status === 500 &&
         error.response.data.message === "Attempt to read property 'id' on null"
+        // error.response.data.message === "Attempt to read property 'id' on null"
       ) {
-        showInfo();
-        setTimeout(() => {
-          const authStore = useAuthStore();
-          authStore.logout();
-          window.location.href = "http://localhost:3001/login";
-        }, 2000);
+        // alert("Refresh Token has expired");
+        window.location.href = "http://localhost:3001/tokenProcess";
       }
       return Promise.reject(error);
     }

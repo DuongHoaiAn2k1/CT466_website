@@ -41,6 +41,9 @@ class OrderService {
   async getByDate(data) {
     return (await this.api.post("/bydate/all", data)).data;
   }
+  async getListOrderUser() {
+    return (await this.api.get("get/order/user")).data;
+  }
 }
 
 export default new OrderService();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Mail\OtpMail;
+use App\Models\Order;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -47,12 +48,14 @@ class UserController extends Controller
                 ], 500);
             }
             $users = User::where('roles', '<>', 0)->get();
+            $list_order = Order::get();
             $dataLength = count($users);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Lấy danh sách người dùng thành công',
                 'data' => $users,
-                'length' => $dataLength
+                'length' => $dataLength,
+                'list_order' => $list_order
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
