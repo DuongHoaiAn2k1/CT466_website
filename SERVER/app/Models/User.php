@@ -4,12 +4,13 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Http\Controllers\API\OrderController;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Models\Order;
+use App\Models\Review;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -61,11 +62,21 @@ class User extends Authenticatable implements JWTSubject
 
     public function order()
     {
-        return $this->hasMany(OrderController::class, 'order_id');
+        return $this->hasMany(Order::class, 'user_id');
     }
+
+    // public function orders()
+    // {
+    //     return $this->hasMany(Order::class, 'user_id');
+    // }
 
     public function favorite()
     {
         return $this->hasMany(Favorite::class, 'favorite_id');
+    }
+
+    public function review()
+    {
+        return $this->hasMany(Review::class, 'review_id');
     }
 }

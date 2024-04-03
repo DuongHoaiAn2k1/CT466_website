@@ -23,4 +23,8 @@ class Product extends Model
     {
         return $this->belongsToMany(Favorite::class, 'favorite_id');
     }
+    public function review()
+    {
+        return $this->belongsToMany(Review::class, 'review_id');
+    }
 }

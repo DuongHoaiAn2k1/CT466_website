@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Mail\OtpMail;
 use App\Models\Order;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use Tymon\JWTAuth\Facades\JWTFactory;
+use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
 {
@@ -395,6 +396,179 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Delete user successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function filter_users(Request $request)
+    {
+        try {
+            $criteria = $request->criteria;
+            $condition = $request->condition;
+            $query = User::query()->where('roles', '<>', 0);
+            $data = null;
+
+            if ($criteria == 1) {
+                switch ($condition) {
+                    case 1:
+                        // Lấy tất cả người dùng và tính tổng số đơn hàng và tổng số tiền đã mua
+                        $data = $query->withCount(['order' => function ($query) {
+                            $query->where('status', '=', 3);
+                        }])->withSum(['order' => function ($query) {
+                            $query->where('status', '=', 3);
+                        }], 'total_cost')->get();
+                        break;
+                    case 2:
+                        // Lấy danh sách người dùng mới tạo trong tháng này
+                        $data = $query->whereMonth('created_at', '=', now()->month)
+                            ->whereYear('created_at', '=', now()->year)
+                            ->withCount(['order' => function ($query) {
+                                $query->where('status', '=', 3);
+                            }])->withSum(['order' => function ($query) {
+                                $query->where('status', '=', 3);
+                            }], 'total_cost')->get();
+                        break;
+                    case 3:
+                        // Lấy danh sách người dùng mới tạo trong tháng trước cùng với tổng số đơn hàng và tổng tiền
+                        $currentMonth = date('m');
+                        $currentYear = date('Y');
+
+                        if ($currentMonth == "01") {
+                            $lastMonth = 12;
+                            $year = $currentYear - 1;
+                        } else {
+                            $lastMonth = $currentMonth - 1;
+                            $year = $currentYear;
+                        }
+
+                        // Xác định ngày đầu tiên của tháng trước
+                        $startDate = $year . '-' . str_pad($lastMonth, 2, '0', STR_PAD_LEFT) . '-01T00:00:00.000Z';
+
+                        // Xác định ngày cuối cùng của tháng trước
+                        $endDate = $year . '-' . str_pad($lastMonth, 2, '0', STR_PAD_LEFT) . '-' . date('t', strtotime("$year-$lastMonth")) . 'T23:59:59.999Z';
+
+                        $data = $query->whereBetween('created_at', [$startDate, $endDate])
+                            ->withCount(['order' => function ($query) {
+                                $query->where('status', '=', 3);
+                            }])
+                            ->withSum(['order' => function ($query) {
+                                $query->where('status', '=', 3);
+                            }], 'total_cost')
+                            ->get();
+                        break;
+
+                    case 4:
+                        // Lấy danh sách người dùng mới tạo trong năm 2024
+                        $data = $query->whereYear('created_at', '=', 2024)
+                            ->withCount(['order' => function ($query) {
+                                $query->where('status', '=', 3);
+                            }])->withSum(['order' => function ($query) {
+                                $query->where('status', '=', 3);
+                            }], 'total_cost')->get();
+                        break;
+                    case 5:
+                        // Lấy danh sách người dùng mới tạo trong năm 2023
+                        $data = $query->whereYear('created_at', '=', 2023)
+                            ->withCount(['order' => function ($query) {
+                                $query->where('status', '=', 3);
+                            }])->withSum(['order' => function ($query) {
+                                $query->where('status', '=', 3);
+                            }], 'total_cost')->get();
+                        break;
+                }
+            } elseif ($criteria == 2) {
+                switch ($condition) {
+                    case 1:
+                        // Lấy tất cả người dùng, không cần thay đổi
+                        $data = $query->withCount(['order' => function ($query) {
+                            $query->where('status', '=', 3);
+                        }])->withSum(['order' => function ($query) {
+                            $query->where('status', '=', 3);
+                        }], 'total_cost')->get();
+                        break;
+                    case 2:
+                        // Lấy danh sách người dùng mua hàng trong tháng này cùng với tổng số đơn hàng và tổng tiền
+                        $data = $query->whereHas('order', function ($query) {
+                            $query->whereMonth('created_at', '=', now()->month)
+                                ->whereYear('created_at', '=', now()->year)
+                                ->where('status', '=', 3);
+                        })->withCount(['order' => function ($query) {
+                            $query->whereMonth('created_at', '=', now()->month)
+                                ->whereYear('created_at', '=', now()->year)
+                                ->where('status', '=', 3);
+                        }])->withSum(['order' => function ($query) {
+                            $query->whereMonth('created_at', '=', now()->month)
+                                ->whereYear('created_at', '=', now()->year)
+                                ->where('status', '=', 3);
+                        }], 'total_cost')->get();
+                        break;
+                    case 3:
+                        $currentMonth = date('m');
+                        $currentYear = date('Y');
+
+                        if ($currentMonth == "01") {
+                            $lastMonth = 12;
+                            $year = $currentYear - 1;
+                        } else {
+                            $lastMonth = $currentMonth - 1;
+                            $year = $currentYear;
+                        }
+                        // Xác định ngày đầu tiên của tháng trước
+                        $startDate = $year . '-' . str_pad($lastMonth, 2, '0', STR_PAD_LEFT) . '-01T00:00:00.000Z';
+                        // Xác định ngày cuối cùng của tháng trước
+                        $endDate = $year . '-' . str_pad($lastMonth, 2, '0', STR_PAD_LEFT) . '-' . date('t', strtotime("$year-$lastMonth")) . 'T23:59:59.999Z';
+                        // Lấy danh sách người dùng mua hàng trong tháng trước cùng với tổng số đơn hàng và tổng tiền
+                        $data = $query->whereHas('order', function ($query) use ($startDate, $endDate) {
+                            $query->whereBetween('created_at', [$startDate, $endDate])
+                                ->where('status', '=', 3);
+                        })->withCount(['order' => function ($query) use ($startDate, $endDate) {
+                            $query->whereBetween('created_at', [$startDate, $endDate])
+                                ->where('status', '=', 3);
+                        }])->withSum(['order' => function ($query) use ($startDate, $endDate) {
+                            $query->whereBetween('created_at', [$startDate, $endDate])
+                                ->where('status', '=', 3);
+                        }], 'total_cost')->get();
+                        break;
+
+                    case 4:
+                        // Lấy danh sách người dùng mua hàng trong năm 2024 cùng với tổng số đơn hàng và tổng tiền
+                        $data = $query->whereHas('order', function ($query) {
+                            $query->whereYear('created_at', '=', 2024)
+                                ->where('status', '=', 3);
+                        })->withCount(['order' => function ($query) {
+                            $query->whereYear('created_at', '=', 2024)
+                                ->where('status', '=', 3);
+                        }])->withSum(['order' => function ($query) {
+                            $query->whereYear('created_at', '=', 2024)
+                                ->where('status', '=', 3);
+                        }], 'total_cost')->get();
+                        break;
+                    case 5:
+                        $data = $query->whereHas('order', function ($query) {
+                            $query->whereYear('created_at', '=', 2023)
+                                ->where('status', '=', 3);
+                        })->withCount(['order' => function ($query) {
+                            $query->whereYear('created_at', '=', 2023)
+                                ->where('status', '=', 3);
+                        }])->withSum(['order' => function ($query) {
+                            $query->whereYear('created_at', '=', 2023)
+                                ->where('status', '=', 3);
+                        }], 'total_cost')->get();
+                        break;
+                }
+            }
+            $dataLength = count($data);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Danh sách người dùng theo tiêu chí và điều kiện đã lọc',
+                'data' => $data,
+                'length' => $dataLength,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

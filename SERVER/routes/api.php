@@ -12,8 +12,11 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\FavoriteController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderDetailController;
+use App\Http\Controllers\API\ReviewController;
 use App\Models\Favorite;
 use App\Models\Order;
+use App\Models\OrderDetail;
+use App\Models\Review;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +58,7 @@ Route::prefix('user')->group(function () {
     Route::patch('/point/decrease', [UserController::class, 'decrementPoint']);
     Route::get('/point/get', [UserController::class, 'getCurrentPoint']);
     Route::patch('/point/restore', [UserController::class, 'restorePoint']);
+    Route::post("/filter/users", [UserController::class, 'filter_users']);
     // Route::post('/login', [UserController::class, 'login']);
     // Route::post('/logout', 'App\Http\Controllers\UserController@logout');
 });
@@ -74,12 +78,18 @@ Route::prefix('/category')->group(function () {
 Route::prefix('/product')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::post('/name', [ProductController::class, 'getProductByCategoryName']);
+    Route::post('/get/name/list', [ProductController::class, 'getProductByName']);
     Route::get('/{id}', [ProductController::class, 'get']);
+    Route::post('/decrease/product/quantity', [ProductController::class, 'decreaseProductQuantity']);
+    Route::post('/increase/product/quantity', [ProductController::class, 'increaseProductQuantity']);
     Route::get('/category/{id}', [ProductController::class, 'getProductByCategoryId']);
     Route::post("/", [ProductController::class, 'create'])->middleware('JWTMiddlewate');
     Route::post('/{id}', [ProductController::class, 'update'])->middleware('JWTMiddlewate');
     Route::delete('/{id}', [ProductController::class, 'delete'])->middleware('JWTMiddlewate');
     Route::get('/price/{id}', [ProductController::class, 'getPrice']);
+    Route::post('/increase/view/{id}', [ProductController::class, 'increase_product_view_count']);
+    Route::post('/condition/list/product', [ProductController::class, 'getProductByCondition']);
+    Route::patch('/{id}', [ProductController::class, 'updateQuantity']);
 });
 
 Route::prefix('/cart')->group(function () {
@@ -107,11 +117,14 @@ Route::prefix('/order')->group(function () {
     Route::patch('/{id}', [OrderController::class, 'cancel']);
     Route::patch('update/{id}', [OrderController::class, 'update_status']);
     Route::get('/get/order/user', [OrderController::class, 'list_user_order']);
+    Route::post('/condition/list/order', [OrderController::class, 'getOrderByCondition']);
+    Route::post('/condition/calculate/cost', [OrderController::class, 'calculateTotalCostAndShippingFee']);
 });
 
 Route::prefix('/orderDetail')->group(function () {
     Route::get('/{id}', [OrderDetailController::class, 'get']);
     Route::post('/', [OrderDetailController::class, 'create']);
+    Route::get('/statistics/sales', [OrderDetailController::class, 'sales_statistics']);
 });
 
 
@@ -120,4 +133,12 @@ Route::prefix('/favorite')->group(function () {
     Route::get('/', [FavoriteController::class, 'get_by_user']);
     Route::get('/all', [FavoriteController::class, 'get_all']);
     Route::delete('/{id}', [FavoriteController::class, 'delete']);
+});
+
+Route::prefix('/review')->group(function () {
+    Route::get('/', [ReviewController::class, 'getAll']);
+    Route::get('/{id}', [ReviewController::class, 'getByProductId']);
+    Route::post('/', [ReviewController::class, 'create']);
+    Route::post('/check/{id}', [ReviewController::class, 'userHasReviewedProduct']);
+    Route::delete('/{id}', [ReviewController::class, 'delete']);
 });
