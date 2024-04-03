@@ -77,6 +77,7 @@ Route::prefix('/category')->group(function () {
 
 Route::prefix('/product')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
+    Route::get('/category/group', [ProductController::class, 'indexGroupedByCategory']);
     Route::post('/name', [ProductController::class, 'getProductByCategoryName']);
     Route::post('/get/name/list', [ProductController::class, 'getProductByName']);
     Route::get('/{id}', [ProductController::class, 'get']);

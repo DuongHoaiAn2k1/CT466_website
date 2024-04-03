@@ -30,6 +30,28 @@ class ProductController extends Controller
             ], 500);
         }
     }
+    public function indexGroupedByCategory()
+    {
+        try {
+            $groupedProducts = Product::all()->groupBy('category_id');
+
+            $groupedProductsArray = [];
+            foreach ($groupedProducts as $categoryId => $products) {
+                $groupedProductsArray[$categoryId] = $products->toArray();
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Lấy danh sách sản phẩm được nhóm theo category_id thành công',
+                'groupedProducts' => $groupedProductsArray
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 
     public function get($product_id)
     {
