@@ -24,89 +24,75 @@
       <!--Grid row-->
       <div class="row">
         <hr />
-        <!--Grid column-->
-        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase">Liên hệ</h5>
 
-          <ul class="list-unstyled mb-0">
-            <li>
-              <a href="#!" class="text-body">Link 1</a>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase mb-2">Liên hệ</h5>
+          <ul>
+            <li class="address">
+              94 3/2 Xuân Khánh, Ninh Kiều, Cần THơ <br />(Địa chỉ cũ ấp 10 xã
+              Khánh Tiến Huyện U Minh Tỉnh Cà Mau)
             </li>
-            <li>
-              <a href="#!" class="text-body">Link 2</a>
+            <li class="tel"><a href="tel:0943 808 107">0943 808 107</a></li>
+            <li class="phone"><a href="tel:0976 146 523">0976 146 523</a></li>
+            <li class="time">Thứ 2-6: 8h - 20h; Thứ 7-CN: 9h - 17h</li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase mb-2">Hỗ trợ</h5>
+
+          <ul>
+            <li class="nav-item me-2 me-lg-0 d-none d-md-inline-block">
+              <router-link class="nav-link" :to="{ name: 'shipping' }"
+                ><i class="fas fa-credit-card"></i> Chính sách giao
+                hàng</router-link
+              >
             </li>
-            <li>
-              <a href="#!" class="text-body">Link 3</a>
+            <li class="nav-item me-2 me-lg-0">
+              <router-link class="nav-link" :to="{ name: 'guide' }"
+                ><i class="fas fa-info"></i> Hướng dẫn mua hàng</router-link
+              >
             </li>
-            <li>
-              <a href="#!" class="text-body">Link 4</a>
+            <li class="nav-item me-2 me-lg-0">
+              <router-link class="nav-link" :to="{ name: 'contact' }"
+                ><i class="fas fa-map-marker-alt"></i>Thông tin liên
+                hệ</router-link
+              >
             </li>
           </ul>
         </div>
-        <!--Grid column-->
 
-        <!--Grid column-->
         <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase mb-0">Hỗ trợ</h5>
+          <h5 class="text-uppercase mb-2">Danh mục</h5>
 
-          <ul class="list-unstyled">
+          <ul>
+            <li><a>Khô cá Cà Mau</a></li>
+            <li><a>Tôm khô Cà Mau</a></li>
+            <li><a>Bánh phồng tôm</a></li>
+            <li><a>Khô 1 nắng</a></li>
+            <li><a>Mực khô Cà Mau</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase mb-2">Đối tác</h5>
+
+          <ul>
             <li>
-              <a href="#!" class="text-body">Link 1</a>
+              <a href="https://dacsan4u.com" target="_blank">Đặc sản 4K</a>
             </li>
             <li>
-              <a href="#!" class="text-body">Link 2</a>
+              <a href="https://tomkhocamau.net" target="_blank"
+                >Tôm khô Cà Mau</a
+              >
             </li>
             <li>
-              <a href="#!" class="text-body">Link 3</a>
-            </li>
-            <li>
-              <a href="#!" class="text-body">Link 4</a>
+              <a href="https://banhphongtom.net" target="_blank"
+                >Bánh phồng tôm miền Tây</a
+              >
             </li>
           </ul>
         </div>
-        <!--Grid column-->
-
-        <!--Grid column-->
-        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase">Danh mục</h5>
-
-          <ul class="list-unstyled mb-0">
-            <li>
-              <a href="#!" class="text-body">Liên hệ</a>
-            </li>
-            <li>
-              <a href="#!" class="text-body">Hỗ trợ</a>
-            </li>
-            <li>
-              <a href="#!" class="text-body">Danh mục</a>
-            </li>
-            <li>
-              <a href="#!" class="text-body">Đối tác</a>
-            </li>
-          </ul>
-        </div>
-        <!--Grid column-->
-
-        <!--Grid column-->
-        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase mb-0">Đối tác</h5>
-
-          <ul class="list-unstyled">
-            <li>
-              <a href="#!" class="text-body">Link 1</a>
-            </li>
-            <li>
-              <a href="#!" class="text-body">Link 2</a>
-            </li>
-            <li>
-              <a href="#!" class="text-body">Link 3</a>
-            </li>
-            <li>
-              <a href="#!" class="text-body">Link 4</a>
-            </li>
-          </ul>
-        </div>
-        <!--Grid column-->
       </div>
       <!--Grid row-->
     </div>
@@ -122,8 +108,18 @@
 
 <script setup></script>
 
-<style>
+<style scoped>
 .bg-22222222 {
   background-color: #22222222 !important;
+}
+ul {
+  padding: 0px;
+}
+ul li {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  color: black;
 }
 </style>

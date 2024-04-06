@@ -103,7 +103,14 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { onMounted } from "vue";
+import { useSearchStore } from "@/stores/search";
+const searchStore = useSearchStore();
+onMounted(() => {
+  searchStore.deleteDataSearch();
+});
+</script>
 
 <style>
 .design-first-img {

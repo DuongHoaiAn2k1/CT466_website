@@ -128,6 +128,11 @@
 .design-first-img {
   width: 450px;
 }
+@media (max-width: 739px) {
+  .design-first-img {
+    width: 250px;
+  }
+}
 .font-weight-600 {
   font-weight: 600;
 }

@@ -67,7 +67,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/{id}', [UserController::class, 'index']);
 });
 
-Route::prefix('/category')->group(function () {
+Route::prefix('/category')->middleware('throttle:1000,1')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
     Route::get('/{id}', [CategoryController::class, 'get']);
     Route::post('/', [CategoryController::class, 'create'])->middleware('JWTMiddlewate');
@@ -75,7 +75,7 @@ Route::prefix('/category')->group(function () {
     Route::delete('/{id}', [CategoryController::class, 'delete'])->middleware('JWTMiddlewate');
 });
 
-Route::prefix('/product')->group(function () {
+Route::prefix('/product')->middleware('throttle:1000,1')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::get('/category/group', [ProductController::class, 'indexGroupedByCategory']);
     Route::post('/name', [ProductController::class, 'getProductByCategoryName']);
@@ -84,16 +84,17 @@ Route::prefix('/product')->group(function () {
     Route::post('/decrease/product/quantity', [ProductController::class, 'decreaseProductQuantity']);
     Route::post('/increase/product/quantity', [ProductController::class, 'increaseProductQuantity']);
     Route::get('/category/{id}', [ProductController::class, 'getProductByCategoryId']);
-    Route::post("/", [ProductController::class, 'create'])->middleware('JWTMiddlewate');
+    Route::post("/", [ProductController::class, 'create']);
     Route::post('/{id}', [ProductController::class, 'update'])->middleware('JWTMiddlewate');
     Route::delete('/{id}', [ProductController::class, 'delete'])->middleware('JWTMiddlewate');
     Route::get('/price/{id}', [ProductController::class, 'getPrice']);
     Route::post('/increase/view/{id}', [ProductController::class, 'increase_product_view_count']);
     Route::post('/condition/list/product', [ProductController::class, 'getProductByCondition']);
     Route::patch('/{id}', [ProductController::class, 'updateQuantity']);
+    Route::get('/review/list', [ProductController::class, 'getProductsWithReviews']);
 });
 
-Route::prefix('/cart')->group(function () {
+Route::prefix('/cart')->middleware('throttle:1000,1')->group(function () {
     // Route::get('/', [CartController::class, 'index']);
     Route::get('/', [CartController::class, 'get']);
     Route::get('/user/count', [CartController::class, 'count']);
@@ -122,21 +123,21 @@ Route::prefix('/order')->group(function () {
     Route::post('/condition/calculate/cost', [OrderController::class, 'calculateTotalCostAndShippingFee']);
 });
 
-Route::prefix('/orderDetail')->group(function () {
+Route::prefix('/orderDetail')->middleware('throttle:1000,1')->group(function () {
     Route::get('/{id}', [OrderDetailController::class, 'get']);
     Route::post('/', [OrderDetailController::class, 'create']);
     Route::get('/statistics/sales', [OrderDetailController::class, 'sales_statistics']);
 });
 
 
-Route::prefix('/favorite')->group(function () {
+Route::prefix('/favorite')->middleware('throttle:1000,1')->group(function () {
     Route::post('/', [FavoriteController::class, 'create']);
     Route::get('/', [FavoriteController::class, 'get_by_user']);
     Route::get('/all', [FavoriteController::class, 'get_all']);
     Route::delete('/{id}', [FavoriteController::class, 'delete']);
 });
 
-Route::prefix('/review')->group(function () {
+Route::prefix('/review')->middleware('throttle:1000,1')->group(function () {
     Route::get('/', [ReviewController::class, 'getAll']);
     Route::get('/{id}', [ReviewController::class, 'getByProductId']);
     Route::post('/', [ReviewController::class, 'create']);

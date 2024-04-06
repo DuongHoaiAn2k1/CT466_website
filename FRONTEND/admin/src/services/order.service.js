@@ -42,7 +42,15 @@ class OrderService {
     return (await this.api.post("/bydate/all", data)).data;
   }
   async getListOrderUser() {
-    return (await this.api.get("get/order/user")).data;
+    return (await this.api.get("/get/order/user")).data;
+  }
+
+  async getOrderByCondition(data) {
+    return (await this.api.post("/condition/list/order", data)).data;
+  }
+
+  async calculateCost(data) {
+    return (await this.api.post("/condition/calculate/cost", data)).data;
   }
 }
 

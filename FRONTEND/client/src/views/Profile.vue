@@ -83,10 +83,10 @@
                         <div class="task-box rounded-3">
                           <div class="card-body">
                             <div class="row align-item-center">
-                              <div class="col-xl-6 col-sm-5">Mã đơn hàng:</div>
+                              <div class="">Mã đơn hàng:</div>
                             </div>
                             <div class="row align-items-center">
-                              <div class="col-2">
+                              <div class="col-xl-2 col-md-6">
                                 <div class="font-size-15">
                                   <label
                                     class="form-check-label task-title"
@@ -96,9 +96,9 @@
                                 </div>
                               </div>
                               <!-- end col -->
-                              <div class="col-10">
+                              <div class="col-xl-10 col-md-6">
                                 <div class="row align-items-center">
-                                  <div class="col-2">
+                                  <div class="col-2 detail-off">
                                     <div
                                       class="avatar-group mt-3 mt-xl-0 task-assigne"
                                     >
@@ -129,14 +129,14 @@
                                     <!-- end avatar group -->
                                   </div>
 
-                                  <div class="col-2">
+                                  <div class="col-xl-2 col-md-6 detail-on">
                                     {{ formatCurrency(data.total_cost) }}
                                   </div>
-                                  <div class="col-4">
+                                  <div class="col-4 detail-off">
                                     {{ covertTime(data.created_at) }}
                                   </div>
                                   <!-- end col -->
-                                  <div class="col-2">
+                                  <div class="col-2 detail-off">
                                     <div
                                       class="d-flex flex-wrap gap-3 mt-3 mt-xl-0 justify-content-md-end"
                                     >
@@ -189,7 +189,7 @@
                                     </div>
                                   </div>
 
-                                  <div class="col-2">
+                                  <div class="col-xl-2 col-md-6 detail-on">
                                     <router-link
                                       :to="{
                                         name: 'order-detail',
@@ -1032,6 +1032,15 @@ const paginatedList = computed(() => {
 </script>
 
 <style>
+@media (max-width: 739px) {
+  .detail-off {
+    display: none; /* Ẩn cột có lớp col-4 */
+  }
+  detail-on {
+    width: 150%;
+  }
+}
+
 .yellow {
   color: yellow;
 }

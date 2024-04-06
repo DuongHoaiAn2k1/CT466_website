@@ -79,11 +79,13 @@
                 }}</span>
               </div>
               <p class="text-muted mb-0">
-                <i v-show="rateValue >= 1" class="bx bxs-star text-warning"></i>
-                <i v-show="rateValue >= 2" class="bx bxs-star text-warning"></i>
-                <i v-show="rateValue >= 3" class="bx bxs-star text-warning"></i>
-                <i v-show="rateValue >= 4" class="bx bxs-star text-warning"></i>
-                <i v-show="rateValue == 5" class="bx bxs-star text-warning"></i>
+                <el-rate
+                  v-model="averageRating"
+                  disabled
+                  show-score
+                  text-color="#ff9900"
+                  score-template="{value} points"
+                />
                 <!-- <i class="bx bxs-star-half text-warning"></i> -->
               </p>
               <div>
@@ -185,13 +187,130 @@
           <div class="col-md-6">
             <span class="deal-text">Các sản phẩm có liên quan</span>
           </div>
-          <div class="col-md-6">
-            <a href="#" data-abc="true">
-              <span class="ml-auto view-all"></span>
-            </a>
+          <div class="col-md-6"></div>
+        </div>
+        <div class="row row-underline">
+          <el-scrollbar>
+            <div class="scrollbar-flex-content">
+              <div
+                v-for="product in listProductByCategory"
+                :key="product.product_id"
+                class="scrollbar-demo-item"
+              >
+                <div class="card h-100 shadow-sm">
+                  <router-link
+                    :to="{
+                      name: 'product-detail',
+                      params: { id: product.product_id },
+                    }"
+                  >
+                    <img
+                      :src="
+                        'http://127.0.0.1:8000/storage/' +
+                        JSON.parse(product.product_img)[0]
+                      "
+                      class="card-img-top-2"
+                      alt="product.title"
+                    />
+                  </router-link>
+
+                  <!-- <div class="label-top shadow-sm">
+            <a class="text-white" href="#">asus</a>
+          </div> -->
+                  <div class="card-body">
+                    <h5 style="margin-bottom: 0px" class="card-title">
+                      <p class="name-product-2">{{ product.product_name }}</p>
+                      <p
+                        style="
+                          margin-bottom: 0px !important;
+                          font-weight: 600;
+                          font-size: 15px;
+                        "
+                        class="mt-2 text-danger text-center"
+                      >
+                        {{ formatCurrency(product.product_price) }}/kg
+                      </p>
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </el-scrollbar>
+        </div>
+        <div class="container bootstrap snippets bootdey">
+          <div v-show="!isReviewProduct" class="row mt-2">
+            <div class="col-3"></div>
+            <div class="col-6">
+              <h2>Cho chúng tôi xin đánh giá về sản phẩm</h2>
+
+              <div class="mb-3">
+                <el-rate v-model="rateComment" allow-half />
+              </div>
+              <div class="mb-3">
+                <label for="comment">Đánh giá:</label>
+                <textarea
+                  class="form-control"
+                  id="comment"
+                  rows="3"
+                  v-model="commentValue"
+                ></textarea>
+              </div>
+              <button @click="handleComment" class="btn btn-dark">
+                Đánh giá
+              </button>
+            </div>
+            <div class="col-3"></div>
+          </div>
+          <div v-show="dataReviewByProductLength != 0" class="row mt-2">
+            <div class="panel panel-default widget">
+              <div class="panel-heading">
+                <span class="glyphicon glyphicon-comment"></span>
+                <h3 class="panel-title">Các phản hồi của khách hàng</h3>
+              </div>
+              <div class="panel-body">
+                <ul
+                  class="list-group"
+                  v-for="data in listCommentPagination"
+                  :key="data.review_id"
+                >
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-xs-10 col-md-11">
+                        <div>
+                          <a href="#">
+                            {{ data.user.name }}
+                            <el-rate v-model="data.rating" allow-half
+                          /></a>
+                          <div class="mic-info">
+                            Thời gian: {{ convertTime(data.created_at) }}
+                          </div>
+                        </div>
+                        <div></div>
+                        <div class="comment-text">{{ data.comment }}</div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+                <div class="text-end" v-show="dataReviewByProductLength != 0">
+                  <el-pagination
+                    v-model:current-page="currentPage"
+                    @current-change="handleCurrentChange"
+                    small
+                    background
+                    layout="prev, pager, next"
+                    :total="
+                      Math.ceil(dataReviewByProductLength / pageSize) * 10
+                    "
+                    class="mt-4"
+                  />
+                </div>
+                <div v-show="dataReviewByProductLength == 0">
+                  <p class="text-center">Không có sản phẩm nào</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="row"></div>
       </div>
     </div>
   </div>
@@ -201,11 +320,12 @@
 import "../assets/css/PulseLoader.css";
 import usePulseLoader from "../assets/js/PulseLoader.js";
 import productService from "@/services/product.service";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import cartService from "@/services/cart.service";
 import favoriteService from "@/services/favorite.service";
+import reviewService from "@/services/review.service";
 import { useCartStore } from "@/stores/cart";
 import { ElMessage } from "element-plus";
 const { loading, spinnerStyle, spinnerDelay1, spinnerDelay2, spinnerDelay3 } =
@@ -217,18 +337,34 @@ const route = useRoute();
 const router = useRouter();
 const productId = computed(() => route.params.id);
 const productDetail = ref([]);
+const listProductByCategory = ref([]);
 const listFavorite = ref([]);
 const img_1 = ref("");
 const img_2 = ref("");
 const img_3 = ref("");
-const rateValue = ref(5);
+const rateComment = ref();
 const quantity = ref(1);
+const commentValue = ref("");
+const isReviewProduct = ref(true);
+const listCommentReview = ref([]);
+const currentPage = ref(1);
+const pageSize = 6;
+const averageRating = ref(0);
 // const addToCartSuccess = () => {
 //   ElMessage({
 //     message: "Thêm vào giỏ hàng thành công",
 //     type: "success",
 //   });
 // };
+const categoryId = ref(0);
+
+const increaseProductViews = async () => {
+  try {
+    const response = await productService.increaseView(productId.value);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
 
 const showSuccess = (message) => {
   ElMessage({
@@ -240,6 +376,8 @@ const fetchProduct = async () => {
   try {
     const response = await productService.get(productId.value);
     product.value = response.data;
+    categoryId.value = response.data.category_id;
+    console.log("category id: ", categoryId.value);
     img_1.value = JSON.parse(product.value.product_img)[0];
     img_2.value = JSON.parse(product.value.product_img)[1];
     img_3.value = JSON.parse(product.value.product_img)[2];
@@ -249,11 +387,46 @@ const fetchProduct = async () => {
   }
 };
 
+const dataReviewByProductLength = ref(0);
+const fetchReviewByProduct = async () => {
+  try {
+    const response = await reviewService.getByProduct(productId.value);
+    listCommentReview.value = response.data;
+    averageRating.value = response.average_rating;
+    dataReviewByProductLength.value = response.length;
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const fetchProductByCategoryId = async () => {
+  try {
+    const response = await productService.getProductFromCategoryId(
+      categoryId.value
+    );
+    listProductByCategory.value = response.data;
+    console.log(listProductByCategory);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
 const fetchListFavorite = async () => {
   try {
     const response = await favoriteService.getByUser();
     listFavorite.value = response.data;
     console.log(response);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const checkUserReviewProduct = async () => {
+  try {
+    const response = await reviewService.userHasReviewedProduct(
+      productId.value
+    );
+    console.log("Check user review product: ", response);
+    isReviewProduct.value = response.data;
   } catch (error) {
     console.log(error.response);
   }
@@ -267,10 +440,16 @@ onMounted(() => {
     console.log("YEYE: ", productDetail);
     setTimeout(() => {
       updateDetailProductWithLikes();
+      fetchProductByCategoryId();
 
       loading.value = false;
     }, 500);
+
+    checkUserReviewProduct();
   });
+
+  increaseProductViews();
+  fetchReviewByProduct();
   // setTimeout(() => {
   //   console.log("Product Detail After Updated: ", product);
   // }, 1000);
@@ -333,9 +512,51 @@ const createFavorite = async (productId) => {
     const response = await favoriteService.create({ product_id: productId });
     fetchListFavorite();
     showSuccess("Thêm vào danh sách yêu thích thành công");
+    rateComment.value = 0;
+    commentValue.value = 0;
     setTimeout(() => {
       updateDetailProductWithLikes();
     }, 500);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const handleComment = () => {
+  // console.log("Rate Comment: ", rateComment.value);
+  // console.log("Comment: ", commentValue.value);
+  createComment(productId.value, rateComment.value, commentValue.value);
+  showSuccess("Cảm ơn bạn đã đánh giá");
+  fetchReviewByProduct();
+  checkUserReviewProduct();
+};
+
+const listCommentPagination = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize;
+  return listCommentReview.value.slice(startIndex, startIndex + pageSize);
+});
+
+const handleCurrentChange = (val) => {
+  currentPage.value = val;
+  console.log(`current page: ${val}`);
+};
+
+watch(productId, () => {
+  fetchProduct();
+  fetchProductByCategoryId();
+  increaseProductViews();
+  fetchReviewByProduct();
+  checkUserReviewProduct();
+});
+
+const createComment = async (productId, rating, comment) => {
+  try {
+    const response = await reviewService.create({
+      product_id: productId,
+      rating: rating,
+      comment: comment,
+    });
+    console.log(response);
   } catch (error) {
     console.log(error.response);
   }
@@ -360,9 +581,39 @@ const formatCurrency = (amount) => {
     }) || ""
   );
 };
+
+const convertTime = (dateTimeString) => {
+  var dateTime = moment(dateTimeString);
+  dateTime.utcOffset(7);
+
+  var formattedDateTime = dateTime.format("DD/MM/YYYY HH:mm:ss");
+  return formattedDateTime;
+};
 </script>
 
 <style>
+.scrollbar-flex-content {
+  display: flex;
+}
+.scrollbar-demo-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 200px;
+  margin: 10px;
+  text-align: center;
+  border-radius: 4px;
+  background: var(--el-color-danger-light-9);
+  color: var(--el-color-danger);
+}
+.name-product-2 {
+  font-size: 16px;
+}
+.card-img-top-2 {
+  width: 180px;
+}
 .breadcrumb-item + .breadcrumb-item::before {
   content: ">";
 }
@@ -888,4 +1139,44 @@ ul {
   border-bottom-right-radius: 5px;
 }
 /* Element */
+
+/* Comment design */
+.widget .panel-body {
+  padding: 0px;
+}
+.widget .list-group {
+  margin-bottom: 0;
+}
+.widget .panel-title {
+  display: inline;
+}
+.widget .label-info {
+  float: right;
+}
+.widget li.list-group-item {
+  border-radius: 0;
+  border: 0;
+  border-top: 1px solid #ddd;
+}
+.widget li.list-group-item:hover {
+  background-color: rgba(86, 61, 124, 0.1);
+}
+.widget .mic-info {
+  color: #666666;
+  font-size: 11px;
+}
+.widget .action {
+  margin-top: 5px;
+}
+.widget .comment-text {
+  font-size: 12px;
+}
+.widget .btn-block {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+.img-user {
+  width: 80px;
+  height: auto;
+}
 </style>

@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <h3 class="font-weight-600 mb-2">
-        Viết về Du lịch Cà Mau: Về Miền Đất Mũi Cà Mau
+        Du lịch Cà Mau: Về Miền Đất Mũi Cà Mau
       </h3>
       <div class="text-center mt-5">
         <p>“Nghe nói Cà Mau xa lắm, ở cuối cùng bản đồ Việt Nam.</p>
@@ -143,6 +143,11 @@
 <style>
 .design-first-img {
   width: 450px;
+}
+@media (max-width: 739px) {
+  .design-first-img {
+    width: 250px;
+  }
 }
 .font-weight-600 {
   font-weight: 600;

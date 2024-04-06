@@ -89,7 +89,7 @@ class ReviewController extends Controller
             }
             // Kiểm tra xem người dùng hiện tại có quyền xóa đánh giá hay không
             // Ở đây, giả sử chỉ người dùng đã tạo đánh giá mới có quyền xóa nó
-            if ($review->user_id !== auth()->user()->id) {
+            if (auth()->user()->roles != 0) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Bạn không có quyền xóa đánh giá này'
@@ -121,11 +121,19 @@ class ReviewController extends Controller
                 ], 200);
             }
 
+            // Tính tổng điểm đánh giá
+            $totalRating = $reviews->sum('rating');
+            $totalReviews = $reviews->count();
+            $averageRating = $totalReviews > 0 ? $totalRating / $totalReviews : 0;
+            $dataLength = count($reviews);
+
             // Trả về danh sách đánh giá với thông tin của người dùng đã đánh giá
             return response()->json([
                 'status' => 'success',
                 'message' => 'Lấy danh sách đánh giá thành công',
-                'data' => $reviews
+                'data' => $reviews,
+                'average_rating' => $averageRating,
+                'length' => $dataLength
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -134,6 +142,7 @@ class ReviewController extends Controller
             ], 500);
         }
     }
+
 
     public function userHasReviewedProduct($productId)
     {

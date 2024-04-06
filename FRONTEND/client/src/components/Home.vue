@@ -38,7 +38,11 @@
       </div>
     </nav>
   </div>
-  <div class="container bg-trasparent mt-2" style="position: relative">
+  <div
+    v-show="listProductByName.length == 0"
+    class="container bg-trasparent mt-2"
+    style="position: relative"
+  >
     <p style="margin-bottom: 0px; font-weight: 600">KHÔ CÁ CÀ MAU</p>
     <div
       v-show="!loading"
@@ -58,7 +62,9 @@
               alt="product.title"
             />
           </router-link>
-
+          <p v-show="product.product_quantity == 0" class="out-of-stock">
+            Hết Hàng
+          </p>
           <!-- <div class="label-top shadow-sm">
             <a class="text-white" href="#">asus</a>
           </div> -->
@@ -75,7 +81,13 @@
 
             <div class="d-grid gap-2">
               <a
+                v-show="product.product_quantity != 0"
                 @click="addToCart(product.product_id)"
+                class="btn btn-warning bold-btn"
+                >Thêm</a
+              >
+              <a
+                v-show="product.product_quantity == 0"
                 class="btn btn-warning bold-btn"
                 >Thêm</a
               >
@@ -124,7 +136,11 @@
     </div>
   </div>
 
-  <div class="container bg-trasparent mt-2" style="position: relative">
+  <div
+    v-show="listProductByName.length == 0"
+    class="container bg-trasparent mt-2"
+    style="position: relative"
+  >
     <p style="margin-bottom: 0px; font-weight: 600">TÔM KHÔ</p>
     <div
       v-show="!loading"
@@ -136,7 +152,9 @@
         :key="product.product_id"
       >
         <div class="card h-100 shadow-sm">
-          <a href="#">
+          <router-link
+            :to="{ name: 'product-detail', params: { id: product.product_id } }"
+          >
             <img
               :src="
                 'http://127.0.0.1:8000/storage/' +
@@ -145,8 +163,10 @@
               class="card-img-top"
               alt="product.title"
             />
-          </a>
-
+          </router-link>
+          <p v-show="product.product_quantity == 0" class="out-of-stock">
+            Hết Hàng
+          </p>
           <!-- <div class="label-top shadow-sm">
             <a class="text-white" href="#">asus</a>
           </div> -->
@@ -163,7 +183,116 @@
 
             <div class="d-grid gap-2">
               <a
+                v-show="product.product_quantity != 0"
                 @click="addToCart(product.product_id)"
+                class="btn btn-warning bold-btn"
+                >Thêm</a
+              >
+              <a
+                v-show="product.product_quantity == 0"
+                class="btn btn-warning bold-btn"
+                >Thêm</a
+              >
+            </div>
+            <div class="clearfix mt-1">
+              <span
+                class="float-end"
+                v-show="!product.liked"
+                @click="createFavorite(product.product_id)"
+              >
+                <i
+                  class="fa-regular fa-heart"
+                  style="cursor: pointer; font-size: 24px"
+                ></i>
+              </span>
+              <span
+                class="float-end"
+                v-show="product.liked"
+                @click="deleteFavorite(product.product_id)"
+              >
+                <i
+                  class="fa-solid fa-heart"
+                  style="cursor: pointer; font-size: 24px"
+                ></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center my-5">
+      <div class="v-spinner" v-show="loading">
+        <div
+          class="v-pulse v-pulse1"
+          :style="[spinnerStyle, spinnerDelay1]"
+        ></div>
+        <div
+          class="v-pulse v-pulse2"
+          :style="[spinnerStyle, spinnerDelay2]"
+        ></div>
+        <div
+          class="v-pulse v-pulse3"
+          :style="[spinnerStyle, spinnerDelay3]"
+        ></div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    v-show="listProductByName.length != 0"
+    class="container bg-trasparent mt-2"
+    style="position: relative"
+  >
+    <p style="margin-bottom: 0px; font-weight: 600">KẾT QUẢ TÌM KIẾM</p>
+    <div
+      v-show="!loading"
+      class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-5 g-3"
+    >
+      <div
+        class="col hp"
+        v-for="product in listProductByName"
+        :key="product.product_id"
+      >
+        <div class="card h-100 shadow-sm">
+          <router-link
+            :to="{ name: 'product-detail', params: { id: product.product_id } }"
+          >
+            <img
+              :src="
+                'http://127.0.0.1:8000/storage/' +
+                JSON.parse(product.product_img)[0]
+              "
+              class="card-img-top"
+              alt="product.title"
+            />
+          </router-link>
+          <p v-show="product.product_quantity == 0" class="out-of-stock">
+            Hết Hàng
+          </p>
+          <!-- <div class="label-top shadow-sm">
+            <a class="text-white" href="#">asus</a>
+          </div> -->
+          <div class="card-body">
+            <h5 style="margin-bottom: 0px" class="card-title">
+              <p class="name-product">{{ product.product_name }}</p>
+              <p
+                style="margin-bottom: 0px !important; font-weight: 600"
+                class="mt-2 text-danger text-end"
+              >
+                {{ formatCurrency(product.product_price) }}/kg
+              </p>
+            </h5>
+
+            <div class="d-grid gap-2">
+              <a
+                v-show="product.product_quantity != 0"
+                @click="addToCart(product.product_id)"
+                class="btn btn-warning bold-btn"
+                >Thêm</a
+              >
+              <a
+                v-show="product.product_quantity == 0"
                 class="btn btn-warning bold-btn"
                 >Thêm</a
               >
@@ -221,22 +350,27 @@ import usePulseLoader from "../assets/js/PulseLoader.js";
 import categoryService from "@/services/category.service";
 import favoriteService from "@/services/favorite.service";
 import productService from "@/services/product.service";
-import { onMounted, reactive, ref } from "vue";
+import { useSearchStore } from "@/stores/search";
+import { onMounted, reactive, ref, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import cartService from "@/services/cart.service";
+import { useFavoriteStore } from "@/stores/favorite";
 import { useCartStore } from "@/stores/cart";
 import { ElNotification, ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
 const { loading, spinnerStyle, spinnerDelay1, spinnerDelay2, spinnerDelay3 } =
   usePulseLoader();
 const router = useRouter();
+const favoriteStore = useFavoriteStore();
 const cartStore = useCartStore();
 const authStore = useAuthStore();
+const searchStore = useSearchStore();
 const listCategory = reactive({});
 const listFavorite = ref([]);
 const listProduct = reactive({});
 const fishList = ref([]);
 const shrimpList = ref([]);
+const listProductByName = ref([]);
 
 const showSuccess = (message) => {
   ElMessage({
@@ -305,7 +439,20 @@ const fetchListFavorite = async () => {
   try {
     const response = await favoriteService.getByUser();
     listFavorite.value = response.data;
+    favoriteStore.setFavorite(response.data);
     console.log("List favorite: ", response);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+
+const fetchProductFromName = async (data) => {
+  try {
+    const response = await productService.getProductByName({
+      product_name: data,
+    });
+    listProductByName.value = response.data;
+    console.log("Product By Name: ", listProductByName);
   } catch (error) {
     console.log(error.response);
   }
@@ -356,11 +503,24 @@ const updateShrimpListWithLikes = () => {
   });
 };
 
+watch(
+  () => searchStore.dataSearch,
+  (newValue, oldValue) => {
+    if (newValue !== oldValue) {
+      // alert("Thay đổi");
+      fetchProductFromName(searchStore.dataSearch);
+    }
+  }
+);
+
 onMounted(() => {
   fetchListCategory();
   fetchListProduct();
   fetchList();
   fetchListFavorite();
+  if (searchStore.dataSearch) {
+    fetchProductFromName(searchStore.dataSearch);
+  }
   cartStore.fetchCartCount();
   setTimeout(() => {
     updateFishListWithLikes();
@@ -406,6 +566,15 @@ const formatCurrency = (amount) => {
 </script>
 
 <style scoped>
+.out-of-stock {
+  font-size: 24px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: red;
+  font-weight: bold;
+}
 .design-heart-red {
   background-color: red;
 }

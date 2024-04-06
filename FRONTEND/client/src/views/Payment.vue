@@ -51,17 +51,10 @@
               </div>
               <table class="table table-borderless">
                 <tbody>
-                  <tr v-for="data in cartData">
+                  <tr v-for="(data, index) in cartData">
                     <td>
                       <div class="d-flex mb-2">
-                        <div class="flex-shrink-0">
-                          <img
-                            src="https://www.bootdey.com/image/280x280/87CEFA/000000"
-                            alt=""
-                            width="35"
-                            class="img-fluid"
-                          />
-                        </div>
+                        <div class="flex-shrink-0">{{ index + 1 }}</div>
                         <div class="flex-lg-grow-1 ms-3">
                           <h6 class="small mb-0">
                             <a href="#" class="text-reset">{{
@@ -123,7 +116,7 @@
                       <span
                         data-bs-toggle="tooltip"
                         data-bs-placement="bottom"
-                        title="Đối với các đơn hàng trên 150k sẽ được cộng 10 điểm tích lũy"
+                        title="Đối với các đơn hàng trên 500k sẽ được cộng 10 điểm tích lũy"
                       >
                         <i class="fa-solid fa-circle-info"></i>
                       </span>
@@ -200,7 +193,7 @@
                   </div>
                 </div>
 
-                <div class="d-flex flex-row">
+                <!-- <div class="d-flex flex-row">
                   <div class="d-flex align-items-center pe-2">
                     <input
                       class="form-check-input"
@@ -220,7 +213,7 @@
                     </p>
                     <div class="ms-auto">************1038</div>
                   </div>
-                </div>
+                </div> -->
               </div>
               <div class="row mt-2">
                 <div class="input-group mb-3">
@@ -374,7 +367,7 @@ const handleTotal = () => {
     totalMoney.value -
       pointUsed.value * 1000 +
       calculateShippingFee(number.value) * 0.7 >=
-    300000
+    500000
   ) {
     point.value = 10;
   }
@@ -422,8 +415,14 @@ const handlePayment = async () => {
             order_id: order_id,
             product_id: item.product_id,
             quantity: item.quantity,
+            total_cost_detail: getProduct(item.product_id).product_price,
+          };
+          const productDecreaseQuantity = {
+            product_id: item.product_id,
+            quantity: item.quantity,
           };
           await order_detailService.create(orderDetailData);
+          await productService.decreaseProductQuantity(productDecreaseQuantity);
         }
       }
       await userService.pointDecrement({ point_used: pointUsed.value });

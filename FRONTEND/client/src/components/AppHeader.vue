@@ -17,11 +17,13 @@
             <form class="d-flex input-group w-auto my-auto mb-3 mb-md-0">
               <input
                 autocomplete="off"
+                v-model="dataSearch"
                 type="search"
                 class="form-control rounded"
                 placeholder="Search"
               />
               <span
+                @click="handleSearch"
                 class="input-group-text d-none d-lg-flex border border-2 icon-search"
                 ><i class="fas fa-search"></i
               ></span>
@@ -151,27 +153,46 @@
       Đặc sản Cà Mau</a
     >
     <hr />
-    <a href="#" class="list-group-item list-group-item-action px-3 border-0"
-      >Ẩm thực Cà Mau</a
+    <router-link
+      class="list-group-item list-group-item-action px-3"
+      :to="{ name: 'product', params: { id: 23 } }"
+      >Ẩm thực cà mau</router-link
     >
     <hr />
-    <a href="#" class="list-group-item list-group-item-action px-3 border-0"
-      >Du Lịch Cà Mau</a
+    <router-link
+      class="list-group-item list-group-item-action px-3"
+      :to="{ name: 'travelling' }"
+    >
+      Du lịch Cà Mau</router-link
     >
     <hr />
-    <a href="#" class="list-group-item list-group-item-action px-3 border-0"
-      >Mẹo hay</a
+    <router-link
+      class="list-group-item list-group-item-action px-3"
+      :to="{ name: 'tip' }"
+    >
+      Mẹo hay</router-link
     >
     <hr />
-    <a class="list-group-item list-group-item-action px-3 border-0"
-      >Hướng dẫn mua hàng</a
+    <router-link
+      class="list-group-item list-group-item-action px-3"
+      :to="{ name: 'guide' }"
+    >
+      Hướng dẫn mua hàng</router-link
     >
     <hr />
-    <a class="list-group-item list-group-item-action px-3 border-0"
-      >Thanh toán</a
+    <router-link
+      class="list-group-item list-group-item-action px-3"
+      :to="{ name: 'shipping' }"
+    >
+      Chính sách giao hàng</router-link
     >
     <hr />
-    <a class="list-group-item list-group-item-action px-3 border-0">Liên hệ</a>
+    <router-link
+      class="list-group-item list-group-item-action px-3"
+      :to="{ name: 'contact' }"
+    >
+      Liên hệ</router-link
+    >
     <hr />
   </div>
   <!--Main Navigation-->
@@ -182,8 +203,10 @@ import { computed, onMounted, ref, watchEffect, watch } from "vue";
 const isClick = ref(false);
 import { reactive } from "vue";
 import categoryService from "@/services/category.service";
+import productService from "@/services/product.service";
 import authService from "@/services/auth.service";
 import { useAuthStore } from "@/stores/auth";
+import { useSearchStore } from "@/stores/search";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { useCartStore } from "@/stores/cart";
@@ -199,7 +222,9 @@ defineProps(["number"]);
 const router = useRouter();
 const cartStore = useCartStore();
 const authStore = useAuthStore();
+const searchStore = useSearchStore();
 const isLogin = computed(() => authStore.isUserLoggedIn);
+const dataSearch = ref("");
 const handleLogOut = async () => {
   try {
     const response = await authService.logout();
@@ -212,6 +237,14 @@ const handleLogOut = async () => {
   } catch (error) {
     console.log(error.response);
   }
+};
+
+const handleSearch = () => {
+  // alert(dataSearch.value);
+  // fetchProductFromName(dataSearch.value);
+  searchStore.setDataSearch(dataSearch.value);
+  // dataSearch.value = "";
+  router.push({ name: "home" });
 };
 
 const listCategory = reactive({});

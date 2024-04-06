@@ -186,7 +186,7 @@
             <div
               class="card-footer border-0 px-4 py-2"
               style="
-                background-color: #a8729a;
+                background-color: #0075b1;
                 border-bottom-left-radius: 10px;
                 border-bottom-right-radius: 10px;
               "
@@ -213,17 +213,20 @@ import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElLoading, ElNotification, ElMessage } from "element-plus";
 import userService from "@/services/user.service";
+import productService from "@/services/product.service";
 const centerDialogVisible = ref(false);
 const order = ref([]);
 const address = ref([]);
 const route = useRoute();
 const router = useRouter();
 const orderId = route.params.id;
+const productIncrease = ref([]);
 const fetchOrder = async () => {
   try {
     const response = await orderService.get(orderId);
     order.value = response.data;
     address.value = JSON.parse(response.data.order_address);
+    productIncrease.value = response.data.order_detail;
     console.log(response);
   } catch (error) {
     console.log(error.response);
@@ -242,6 +245,7 @@ const handleCancelOrder = async (orderId) => {
     await userService.restorePointPaid({
       point_paid: order.value.point_used_order,
     });
+    await productService.increaseProductQuantity(productIncrease.value);
     setTimeout(() => {
       loading.close();
       showCancelSuccess();
@@ -285,19 +289,19 @@ const covertTime = (dateTimeString) => {
 <style>
 .gradient-custom {
   /* fallback for old browsers */
-  background: #cd9cf2;
+  background: #0075b1;
 
   /* Chrome 10-25, Safari 5.1-6 */
   background: -webkit-linear-gradient(
     to top left,
-    rgba(205, 156, 242, 1),
+    rgb(42, 204, 236),
     rgba(246, 243, 255, 1)
   );
 
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   background: linear-gradient(
     to top left,
-    rgba(205, 156, 242, 1),
+    rgb(70, 222, 252),
     rgba(246, 243, 255, 1)
   );
 }

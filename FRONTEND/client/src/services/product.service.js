@@ -13,6 +13,10 @@ class ProductService {
     return (await this.api.get("/")).data;
   }
 
+  async getGroupByCategory() {
+    return (await this.api.get("/category/group")).data;
+  }
+
   async getProductFromCategoryName(data) {
     return (await this.api.post("/name", data)).data;
   }
@@ -30,6 +34,21 @@ class ProductService {
   }
   async delete(id) {
     return (await this.api.delete(`${id}`)).data;
+  }
+
+  async increaseView(id) {
+    return (await this.api.post(`/increase/view/${id}`)).data;
+  }
+
+  async getProductByName(data) {
+    return (await this.api.post(`/get/name/list`, data)).data;
+  }
+
+  async decreaseProductQuantity(data) {
+    return (await this.api.post("/decrease/product/quantity", data)).data;
+  }
+  async increaseProductQuantity(data) {
+    return (await this.api.post("/increase/product/quantity", data)).data;
   }
 }
 

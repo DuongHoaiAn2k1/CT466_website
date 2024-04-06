@@ -17,6 +17,10 @@ class UserService {
   async deleteUser(id) {
     return (await this.api.delete(`${id}`)).data;
   }
+
+  async filterUser(data) {
+    return (await this.api.post("/filter/users", data)).data;
+  }
 }
 
 export default new UserService();

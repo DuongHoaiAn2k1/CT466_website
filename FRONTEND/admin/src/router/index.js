@@ -152,9 +152,9 @@ const routes = [
     },
   },
   {
-    path: "/tokenProcess",
-    name: "token",
-    component: () => import("@/components/ProcessToken.vue"),
+    path: "/warehouse",
+    name: "warehouse",
+    component: () => import("@/views/Warehouse.vue"),
     beforeEnter: (to, from, next) => {
       const authStore = useAuthStore();
       if (authStore.isAdminLoggedIn) {
@@ -164,6 +164,26 @@ const routes = [
         showWarning();
       }
     },
+  },
+  {
+    path: "/review",
+    name: "review",
+    component: () => import("@/views/Review.vue"),
+    beforeEnter: (to, from, next) => {
+      const authStore = useAuthStore();
+      if (authStore.isAdminLoggedIn) {
+        next();
+      } else {
+        next({ name: "login" });
+        showWarning();
+      }
+    },
+  },
+
+  {
+    path: "/tokenProcess",
+    name: "token",
+    component: () => import("@/components/ProcessToken.vue"),
   },
 ];
 

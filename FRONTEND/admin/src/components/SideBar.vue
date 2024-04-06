@@ -66,18 +66,18 @@
             </div>
             THỐNG KÊ
           </router-link>
-          <a class="nav-link" href="tables.html">
+          <router-link class="nav-link" :to="{ name: 'warehouse' }">
             <div class="sb-nav-link-icon">
-              <i class="fa-solid fa-user-tie"></i>
+              <i class="fa-solid fa-warehouse"></i>
             </div>
-            NHÂN VIÊN
-          </a>
-          <a class="nav-link" href="tables.html">
+            KHO
+          </router-link>
+          <router-link class="nav-link" :to="{ name: 'review' }">
             <div class="sb-nav-link-icon">
               <i class="fa-solid fa-message"></i>
             </div>
-            TIN NHẮN
-          </a>
+            ĐÁNH GIÁ
+          </router-link>
         </div>
       </div>
       <div class="sb-sidenav-footer"></div>

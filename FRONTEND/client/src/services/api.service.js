@@ -58,7 +58,7 @@ export default (baseURL) => {
         setTimeout(() => {
           const authStore = useAuthStore();
           authStore.logout();
-          window.location.href = "http://localhost:3002/login";
+          window.location.href = "http://localhost:3001/login";
         }, 2000);
       } else if (
         error.request &&

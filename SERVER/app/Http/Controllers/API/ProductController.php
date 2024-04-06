@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -661,6 +662,42 @@ class ProductController extends Controller
                 ], 200);
             }
         } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getProductsWithReviews()
+    {
+        try {
+            $products = Product::with('review.user')->get();
+
+            foreach ($products as $product) {
+                $totalRating = 0;
+                $totalReviews = $product->review->count();
+
+                foreach ($product->review as $review) {
+                    $totalRating += $review->rating;
+                }
+
+                $averageRating = $totalReviews > 0 ? $totalRating / $totalReviews : 0;
+
+                // Thêm dữ liệu đánh giá và tổng điểm trung bình vào thuộc tính của sản phẩm
+                $product->setAttribute('total_rating',  $totalReviews);
+                $product->setAttribute('reviews', $product->review);
+                $product->setAttribute('average', $averageRating);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Lấy danh sách sản phẩm và đánh giá thành công',
+                'listProduct' => $products,
+                'length' => $products->count()
+            ], 200);
+        } catch (\Exception $e) {
+            // Xử lý ngoại lệ nếu có
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage()

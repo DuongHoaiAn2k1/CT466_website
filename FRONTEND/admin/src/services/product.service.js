@@ -13,6 +13,10 @@ class ProductService {
     return (await this.api.get("/")).data;
   }
 
+  async getProductsWithReviews() {
+    return (await this.api.get("/review/list")).data;
+  }
+
   async get(id) {
     return (await this.api.get(`/${id}`)).data;
   }
@@ -22,6 +26,12 @@ class ProductService {
   }
   async delete(id) {
     return (await this.api.delete(`${id}`)).data;
+  }
+  async getProductByCondition(data) {
+    return (await this.api.post("/condition/list/product", data)).data;
+  }
+  async updateQuantity(data, id) {
+    return (await this.api.patch(`/${id}`, data)).data;
   }
 }
 
