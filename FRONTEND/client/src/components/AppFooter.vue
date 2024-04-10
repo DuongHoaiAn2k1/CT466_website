@@ -103,12 +103,36 @@
       © 2024 B2014552 - Dương Hoài Ân
     </div>
     <!-- Copyright -->
+    <button class="go-top-btn" @click="goToTop">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
   </footer>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+
+const goToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+</script>
 
 <style scoped>
+.go-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 999;
+}
 .bg-22222222 {
   background-color: #22222222 !important;
 }

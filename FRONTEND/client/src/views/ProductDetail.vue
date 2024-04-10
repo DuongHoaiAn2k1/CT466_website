@@ -434,7 +434,7 @@ const checkUserReviewProduct = async () => {
 
 onMounted(() => {
   fetchListFavorite();
-
+  cartStore.fetchCartCount();
   fetchProduct().then(() => {
     productDetail.value = product.value.product_des.split(".");
     console.log("YEYE: ", productDetail);
@@ -473,7 +473,7 @@ const addToCart = async (product_id) => {
       product_id: product_id,
       quantity: quantity.value,
     });
-    cartStore.count();
+    await cartStore.fetchCartCount();
     // console.log("Ket qua them: ", response);
     // showSuccess("Thêm vào giỏ hàng thành công");
     // alert("Thêm vào giỏ hành thành công");

@@ -482,7 +482,7 @@
                 small
                 background
                 layout="prev, pager, next"
-                :total="Math.ceil(sortedOrders.length / pageSize) * 10"
+                :total="Math.ceil(listOrder.length / pageSize) * 10"
                 class="mt-4"
               />
             </div>
@@ -897,7 +897,8 @@ const fetchOrderByCondition = async () => {
 };
 
 const sortedOrders = computed(() => {
-  const data = listOrder.value.slice();
+  const startIndex = (currentPage.value - 1) * pageSize;
+  const data = listOrder.value.slice(startIndex, startIndex + pageSize);
   return data.sort((a, b) => {
     const amountA = parseInt(a.total_cost);
     const amountB = parseInt(b.total_cost);

@@ -9,7 +9,7 @@
             class="col-md-4 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0 contain-big-logo"
           >
             <router-link :to="{ name: 'home' }" class="ms-md-2">
-              <img class="logo" src="../assets/logo.jpg" />
+              <img class="logo" src="../assets/logo1.png" />
             </router-link>
           </div>
 
@@ -272,7 +272,7 @@ watchEffect(() => {
 
 <style>
 .logo {
-  width: 180px;
+  width: 80px;
   height: 80px;
   object-fit: contain;
 }

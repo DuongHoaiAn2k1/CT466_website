@@ -48,19 +48,29 @@ export default (baseURL) => {
         // error.response.statusText === "Unauthorized"
       ) {
         window.location.href = "http://localhost:3001/tokenProcess";
-      } else if (
+      }
+
+      if (
         error.request &&
         error.response.status === 401 &&
-        error.response.data.message === "Refresh Token has expired"
+        error.response.statusText == "Unauthorized"
       ) {
-        // alert("Refresh Token has expired");
-        showInfo();
-        setTimeout(() => {
-          const authStore = useAuthStore();
-          authStore.logout();
-          window.location.href = "http://localhost:3001/login";
-        }, 2000);
-      } else if (
+        window.location.href = "http://localhost:3001/tokenProcess";
+      }
+      // if (
+      //   error.request &&
+      //   error.response.status === 401 &&
+      //   error.response.data.message === "Refresh Token has expired"
+      // ) {
+      //   // alert("Refresh Token has expired");
+      //   showInfo();
+      //   setTimeout(() => {
+      //     const authStore = useAuthStore();
+      //     authStore.logout();
+      //     window.location.href = "http://localhost:3001/login";
+      //   }, 2000);
+      // }
+      if (
         error.request &&
         error.response.status === 500 &&
         error.response.data.message === "Attempt to read property 'id' on null"

@@ -55,6 +55,7 @@
                   placeholder="Password"
                   v-model="dataSignUp.password"
                 />
+
                 <label for="floatingPassword">Mật khẩu</label>
                 <span class="text-danger">{{ passwordErrors }}</span>
               </div>
@@ -295,7 +296,7 @@ const showSuccess = () => {
 };
 </script>
 
-<style>
+<style scoped>
 .card-img-left {
   width: 45%;
   /* Link to your background image using in the property below! */

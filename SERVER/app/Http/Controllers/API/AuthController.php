@@ -121,11 +121,11 @@ class AuthController extends Controller
         $refreshToken = request()->refresh_Token;
         try {
             $decoded = JWTAuth::getJWTProvider()->decode($refreshToken);
-            if (strtotime($decoded['exp']) < time()) {
-                return response()->json([
-                    "message" => "Refresh Token has expired"
-                ], 401);
-            }
+            // if (strtotime($decoded['exp']) < time()) {
+            //     return response()->json([
+            //         "message" => "Refresh Token has expired"
+            //     ], 401);
+            // }
             $user = User::find($decoded['sub']);
             if (!$user) {
                 return response()->json([
@@ -171,16 +171,23 @@ class AuthController extends Controller
     public function checkRefreshTokenExpiration(Request $request)
     {
         try {
+
             $refreshToken = $request->refresh_Token;
             $decoded = JWTAuth::getJWTProvider()->decode($refreshToken);
 
             // Kiểm tra thời gian hết hạn của refresh_token
             if (isset($decoded['exp']) && $decoded['exp'] > time()) {
                 // Refresh token còn hạn
-                return true;
+                return response()->json([
+                    'status' => 'success',
+                    'message' => "true"
+                ]);
             } else {
                 // Refresh token đã hết hạn
-                return false;
+                return response()->json([
+                    'status' => 'success',
+                    'message' => "false"
+                ]);
             }
         } catch (\Exception $e) {
             // Xảy ra lỗi khi giải mã token
