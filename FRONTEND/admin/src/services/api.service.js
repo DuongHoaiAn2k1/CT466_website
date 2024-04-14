@@ -22,7 +22,7 @@ export default (baseURL) => {
 
   instance.interceptors.request.use(
     (config) => {
-      const access_token = localStorage.getItem("accessToken");
+      const access_token = localStorage.getItem("access_token");
       console.log("My access_token: ", access_token);
       if (access_token) {
         config.headers.Authorization = `Bearer ${access_token}`;
@@ -38,7 +38,26 @@ export default (baseURL) => {
     (response) => {
       return response;
     },
-    (error) => {
+    async (error) => {
+      if (
+        error.request &&
+        error.response.status === 500 &&
+        error.response.data.message === "Token has expired"
+      ) {
+        const authStore = useAuthStore();
+        const refresh_token = localStorage.getItem("refresh_token");
+
+        const newConfig = error.config;
+        newConfig.headers.Authorization = `Bearer ${refresh_token}`;
+        try {
+          // Thực hiện lại request với refresh token mới
+          const response = await axios(newConfig);
+          return response;
+        } catch (error) {
+          // Xử lý lỗi khi request với refresh token mới
+          return Promise.reject(error);
+        }
+      }
       if (
         error.request &&
         error.response.status === 401 &&

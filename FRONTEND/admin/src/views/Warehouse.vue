@@ -255,7 +255,8 @@ const handleCurrentChange = (val) => {
 }
 .form-design {
   width: 220px;
-  margin-left: 993px;
+  /* margin-left: 993px; */
+  margin-left: 1160px;
 }
 
 .design-input {

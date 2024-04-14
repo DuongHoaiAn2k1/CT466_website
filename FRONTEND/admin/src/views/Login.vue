@@ -79,7 +79,7 @@ const handleLogin = async (data) => {
     authStore.login(access_token, refresh_token, user_id);
     setTimeout(() => {
       router.push({ name: "home" });
-    });
+    }, 500);
     console.log("hi", response);
   } catch (error) {
     console.log(error.response);

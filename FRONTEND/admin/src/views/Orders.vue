@@ -282,6 +282,7 @@ const handleDeleteOrder = (orderId) => {
       });
       setTimeout(() => {
         fetchListOrder();
+        fetchToDayOrder();
         loading.close();
 
         ElMessage({

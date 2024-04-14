@@ -21,6 +21,7 @@
                 type="search"
                 class="form-control rounded"
                 placeholder="Search"
+                @keydown.enter.prevent="handleSearch"
               />
               <span
                 @click="handleSearch"

@@ -5,7 +5,8 @@ import authService from "@/services/auth.service";
 import { useAuthStore } from "@/stores/auth";
 import { onMounted } from "vue";
 import { ElLoading, ElNotification } from "element-plus";
-
+import { useRouter } from "vue-router";
+const router = useRouter();
 const authStore = useAuthStore();
 const handlRefresh = async () => {
   try {
@@ -21,6 +22,9 @@ const handlRefresh = async () => {
       response.user_id
     );
     console.log("After refresh Token: ", response);
+    setTimeout(() => {
+      router.push({ name: "home" });
+    }, 500);
   } catch (error) {
     console.log(error.response);
   }

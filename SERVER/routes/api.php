@@ -13,6 +13,7 @@ use App\Http\Controllers\API\FavoriteController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\OrderDetailController;
 use App\Http\Controllers\API\ReviewController;
+use App\Http\Middleware\CheckRole;
 use App\Models\Favorite;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -46,7 +47,7 @@ Route::group([
 });
 
 Route::prefix('user')->group(function () {
-    Route::get('/', [UserController::class, 'getAll'])->middleware(JWTMiddlewate::class);
+    Route::get('/', [UserController::class, 'getAll'])->middleware(CheckRole::class);
     Route::get('/{id}', [UserController::class, 'index'])->middleware(JWTMiddlewate::class);
     Route::patch('/update', [UserController::class, 'update']);
     Route::patch('/password', [UserController::class, 'update_pass']);
@@ -58,7 +59,7 @@ Route::prefix('user')->group(function () {
     Route::patch('/point/decrease', [UserController::class, 'decrementPoint']);
     Route::get('/point/get', [UserController::class, 'getCurrentPoint']);
     Route::patch('/point/restore', [UserController::class, 'restorePoint']);
-    Route::post("/filter/users", [UserController::class, 'filter_users']);
+    Route::post("/filter/users", [UserController::class, 'filter_users'])->middleware(CheckRole::class);
     // Route::post('/login', [UserController::class, 'login']);
     // Route::post('/logout', 'App\Http\Controllers\UserController@logout');
 });
@@ -84,9 +85,9 @@ Route::prefix('/product')->middleware('throttle:1000,1')->group(function () {
     Route::post('/decrease/product/quantity', [ProductController::class, 'decreaseProductQuantity']);
     Route::post('/increase/product/quantity', [ProductController::class, 'increaseProductQuantity']);
     Route::get('/category/{id}', [ProductController::class, 'getProductByCategoryId']);
-    Route::post("/", [ProductController::class, 'create']);
+    Route::post("/", [ProductController::class, 'create'])->middleware(CheckRole::class);
     Route::post('/{id}', [ProductController::class, 'update'])->middleware('JWTMiddlewate');
-    Route::delete('/{id}', [ProductController::class, 'delete'])->middleware('JWTMiddlewate');
+    Route::delete('/{id}', [ProductController::class, 'delete'])->middleware(CheckRole::class);
     Route::get('/price/{id}', [ProductController::class, 'getPrice']);
     Route::post('/increase/view/{id}', [ProductController::class, 'increase_product_view_count']);
     Route::post('/condition/list/product', [ProductController::class, 'getProductByCondition']);

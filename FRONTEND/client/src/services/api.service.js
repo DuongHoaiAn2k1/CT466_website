@@ -40,11 +40,35 @@ export default (baseURL) => {
     (response) => {
       return response;
     },
-    (error) => {
+    async (error) => {
       if (
         error.request &&
-        error.response.status === 401 &&
-        error.response.data.error === "Access Token has expired"
+        error.response.status == 500 &&
+        error.response.data.message == "Token has expired"
+      ) {
+        const authStore = useAuthStore();
+        const refresh_token = authStore.refreshTokenUser;
+        if (refresh_token) {
+          // Gán refresh token vào header của request
+          const newConfig = error.config;
+          newConfig.headers.Authorization = `Bearer ${refresh_token}`;
+          try {
+            // Thực hiện lại request với refresh token mới
+            const response = await axios(newConfig);
+            return response;
+          } catch (error) {
+            // Xử lý lỗi khi request với refresh token mới
+            return Promise.reject(error);
+          }
+        } else {
+          // Nếu không có refresh token, chuyển hướng người dùng đến trang đăng nhập
+          window.location.href = "http://localhost:3001/login";
+        }
+      }
+      if (
+        error.request &&
+        error.response.status == 401 &&
+        error.response.data.error == "Access Token has expired"
         // error.response.statusText === "Unauthorized"
       ) {
         window.location.href = "http://localhost:3001/tokenProcess";
@@ -52,7 +76,7 @@ export default (baseURL) => {
 
       if (
         error.request &&
-        error.response.status === 401 &&
+        error.response.status == 401 &&
         error.response.statusText == "Unauthorized"
       ) {
         window.location.href = "http://localhost:3001/tokenProcess";
@@ -72,8 +96,8 @@ export default (baseURL) => {
       // }
       if (
         error.request &&
-        error.response.status === 500 &&
-        error.response.data.message === "Attempt to read property 'id' on null"
+        error.response.status == 500 &&
+        error.response.data.message == "Attempt to read property 'id' on null"
         // error.response.data.message === "Attempt to read property 'id' on null"
       ) {
         // alert("Refresh Token has expired");

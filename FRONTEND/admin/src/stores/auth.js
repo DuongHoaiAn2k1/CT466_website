@@ -18,7 +18,7 @@ export const useAuthStore = defineStore({
       this.admin_id = admin_id;
       localStorage.setItem("admin_id", admin_id);
       localStorage.setItem("isAdminLoggedIn", true);
-      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("access_token", accessToken);
       localStorage.setItem("refresh_token", refresh_token);
     },
 
@@ -27,7 +27,7 @@ export const useAuthStore = defineStore({
       this.accessToken = null;
       this.refresh_token = null;
       localStorage.setItem("isAdminLoggedIn", false);
-      localStorage.removeItem("accessToken");
+      localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
       localStorage.removeItem("admin_id");
     },
